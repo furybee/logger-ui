@@ -47,18 +47,24 @@ class LogController
             ->getBuilder()
             ->selectRaw('DISTINCT(app_name) as apps')
             ->pluck('apps')
+            ->sort()
+            ->values()
             ->toArray();
 
         $channels = $this
             ->getBuilder()
             ->selectRaw('DISTINCT(channel) as channels')
             ->pluck('channels')
+            ->sort()
+            ->values()
             ->toArray();
 
         $levelNames = $this
             ->getBuilder()
             ->selectRaw('DISTINCT(level_name) as level_names')
             ->pluck('level_names')
+            ->sort()
+            ->values()
             ->toArray();
 
         $lines = $this

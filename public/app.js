@@ -2257,6 +2257,81 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "filter-bar",
   props: {
@@ -26678,156 +26753,221 @@ var render = function () {
     },
     [
       _c("div", { staticClass: "container mx-auto flex items-center" }, [
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.value.app_name,
-                expression: "value.app_name",
-              },
-            ],
-            staticClass: "bg-gray-800 w-40 mr-2",
-            on: {
-              change: function ($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function (o) {
-                    return o.selected
-                  })
-                  .map(function (o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.$set(
-                  _vm.value,
-                  "app_name",
-                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                )
-              },
-            },
-          },
-          [
-            _c("option", { attrs: { value: "" } }, [_vm._v("ALL")]),
-            _vm._v(" "),
-            _vm._l(_vm.available_filters.app_names, function (app, index) {
-              return _c("option", { key: index }, [
-                _vm._v("\n        " + _vm._s(app) + "\n      "),
-              ])
-            }),
-          ],
-          2
-        ),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.value.channel,
-                expression: "value.channel",
-              },
-            ],
-            staticClass: "bg-gray-800 w-40 mr-2",
-            on: {
-              change: function ($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function (o) {
-                    return o.selected
-                  })
-                  .map(function (o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.$set(
-                  _vm.value,
-                  "channel",
-                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                )
-              },
-            },
-          },
-          [
-            _c("option", { attrs: { value: "" } }, [_vm._v("ALL")]),
-            _vm._v(" "),
-            _vm._l(_vm.available_filters.channels, function (channel, index) {
-              return _c("option", { key: index }, [
-                _vm._v("\n        " + _vm._s(channel) + "\n      "),
-              ])
-            }),
-          ],
-          2
-        ),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.value.level_name,
-                expression: "value.level_name",
-              },
-            ],
-            staticClass: "bg-gray-800 w-40 mr-2",
-            on: {
-              change: function ($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function (o) {
-                    return o.selected
-                  })
-                  .map(function (o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.$set(
-                  _vm.value,
-                  "level_name",
-                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                )
-              },
-            },
-          },
-          [
-            _c("option", { attrs: { value: "" } }, [_vm._v("ALL")]),
-            _vm._v(" "),
-            _vm._l(
-              _vm.available_filters.level_names,
-              function (level_name, index) {
-                return _c("option", { key: index }, [
-                  _vm._v("\n        " + _vm._s(level_name) + "\n      "),
-                ])
-              }
-            ),
-          ],
-          2
-        ),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
+        _c("div", { staticClass: "flex rounded-md shadow-sm" }, [
+          _c(
+            "span",
             {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.value.query,
-              expression: "value.query",
+              staticClass:
+                "\n          inline-flex\n          items-center\n          px-3\n          rounded-l-md\n          border border-r-0 border-gray-900\n          bg-gray-900\n          text-gray-500\n          sm:text-sm\n        ",
             },
-          ],
-          staticClass: "bg-gray-800 w-full",
-          attrs: { type: "search", placeholder: "Search..." },
-          domProps: { value: _vm.value.query },
-          on: {
-            input: function ($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.value, "query", $event.target.value)
+            [_vm._v("\n        App\n      ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.value.app_name,
+                  expression: "value.app_name",
+                },
+              ],
+              staticClass: "bg-gray-800 flex-1 w-40 mr-2",
+              on: {
+                change: function ($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function (o) {
+                      return o.selected
+                    })
+                    .map(function (o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.value,
+                    "app_name",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                },
+              },
             },
-          },
-        }),
+            [
+              _c("option", { attrs: { value: "" } }, [_vm._v("ALL")]),
+              _vm._v(" "),
+              _vm._l(_vm.available_filters.app_names, function (app, index) {
+                return _c("option", { key: index }, [
+                  _vm._v("\n          " + _vm._s(app) + "\n        "),
+                ])
+              }),
+            ],
+            2
+          ),
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "flex rounded-md shadow-sm" }, [
+          _c(
+            "span",
+            {
+              staticClass:
+                "\n          inline-flex\n          items-center\n          px-3\n          rounded-l-md\n          border border-r-0 border-gray-900\n          bg-gray-900\n          text-gray-500\n          sm:text-sm\n        ",
+            },
+            [_vm._v("\n        Channel\n      ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.value.channel,
+                  expression: "value.channel",
+                },
+              ],
+              staticClass: "bg-gray-800 w-40 mr-2",
+              on: {
+                change: function ($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function (o) {
+                      return o.selected
+                    })
+                    .map(function (o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.value,
+                    "channel",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                },
+              },
+            },
+            [
+              _c("option", { attrs: { value: "" } }, [_vm._v("ALL")]),
+              _vm._v(" "),
+              _vm._l(_vm.available_filters.channels, function (channel, index) {
+                return _c("option", { key: index }, [
+                  _vm._v("\n          " + _vm._s(channel) + "\n        "),
+                ])
+              }),
+            ],
+            2
+          ),
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "flex rounded-md shadow-sm" }, [
+          _c(
+            "span",
+            {
+              staticClass:
+                "\n          inline-flex\n          items-center\n          px-3\n          rounded-l-md\n          border border-r-0 border-gray-900\n          bg-gray-900\n          text-gray-500\n          sm:text-sm\n        ",
+            },
+            [_vm._v("\n        Level\n      ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.value.level_name,
+                  expression: "value.level_name",
+                },
+              ],
+              staticClass: "bg-gray-800 w-40 mr-2",
+              on: {
+                change: function ($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function (o) {
+                      return o.selected
+                    })
+                    .map(function (o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.value,
+                    "level_name",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                },
+              },
+            },
+            [
+              _c("option", { attrs: { value: "" } }, [_vm._v("ALL")]),
+              _vm._v(" "),
+              _vm._l(
+                _vm.available_filters.level_names,
+                function (level_name, index) {
+                  return _c("option", { key: index }, [
+                    _vm._v("\n          " + _vm._s(level_name) + "\n        "),
+                  ])
+                }
+              ),
+            ],
+            2
+          ),
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "flex rounded-md shadow-sm w-full" }, [
+          _c(
+            "span",
+            {
+              staticClass:
+                "\n          inline-flex\n          items-center\n          px-3\n          rounded-l-md\n          border border-r-0 border-gray-900\n          bg-gray-900\n          text-gray-500\n          sm:text-sm\n        ",
+            },
+            [
+              _c(
+                "svg",
+                {
+                  staticClass: "h-5 w-5",
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20",
+                    fill: "currentColor",
+                  },
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      "fill-rule": "evenodd",
+                      d: "M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z",
+                      "clip-rule": "evenodd",
+                    },
+                  }),
+                ]
+              ),
+            ]
+          ),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.value.query,
+                expression: "value.query",
+              },
+            ],
+            staticClass: "bg-gray-800 w-full",
+            attrs: { type: "search", placeholder: "Search..." },
+            domProps: { value: _vm.value.query },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.value, "query", $event.target.value)
+              },
+            },
+          }),
+        ]),
       ]),
     ]
   )

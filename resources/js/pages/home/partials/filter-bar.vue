@@ -16,42 +16,117 @@
     "
   >
     <div class="container mx-auto flex items-center">
-      <select class="bg-gray-800 w-40 mr-2" v-model="value.app_name">
-        <option value="">ALL</option>
-        <option
-          v-for="(app, index) in available_filters.app_names"
-          :key="index"
+      <div class="flex rounded-md shadow-sm">
+        <span
+          class="
+            inline-flex
+            items-center
+            px-3
+            rounded-l-md
+            border border-r-0 border-gray-900
+            bg-gray-900
+            text-gray-500
+            sm:text-sm
+          "
         >
-          {{ app }}
-        </option>
-      </select>
+          App
+        </span>
+        <select class="bg-gray-800 flex-1 w-40 mr-2" v-model="value.app_name">
+          <option value="">ALL</option>
+          <option
+            v-for="(app, index) in available_filters.app_names"
+            :key="index"
+          >
+            {{ app }}
+          </option>
+        </select>
+      </div>
 
-      <select class="bg-gray-800 w-40 mr-2" v-model="value.channel">
-        <option value="">ALL</option>
-        <option
-          v-for="(channel, index) in available_filters.channels"
-          :key="index"
+      <div class="flex rounded-md shadow-sm">
+        <span
+          class="
+            inline-flex
+            items-center
+            px-3
+            rounded-l-md
+            border border-r-0 border-gray-900
+            bg-gray-900
+            text-gray-500
+            sm:text-sm
+          "
         >
-          {{ channel }}
-        </option>
-      </select>
+          Channel
+        </span>
+        <select class="bg-gray-800 w-40 mr-2" v-model="value.channel">
+          <option value="">ALL</option>
+          <option
+            v-for="(channel, index) in available_filters.channels"
+            :key="index"
+          >
+            {{ channel }}
+          </option>
+        </select>
+      </div>
 
-      <select class="bg-gray-800 w-40 mr-2" v-model="value.level_name">
-        <option value="">ALL</option>
-        <option
-          v-for="(level_name, index) in available_filters.level_names"
-          :key="index"
+      <div class="flex rounded-md shadow-sm">
+        <span
+          class="
+            inline-flex
+            items-center
+            px-3
+            rounded-l-md
+            border border-r-0 border-gray-900
+            bg-gray-900
+            text-gray-500
+            sm:text-sm
+          "
         >
-          {{ level_name }}
-        </option>
-      </select>
+          Level
+        </span>
+        <select class="bg-gray-800 w-40 mr-2" v-model="value.level_name">
+          <option value="">ALL</option>
+          <option
+            v-for="(level_name, index) in available_filters.level_names"
+            :key="index"
+          >
+            {{ level_name }}
+          </option>
+        </select>
+      </div>
 
-      <input
-        type="search"
-        class="bg-gray-800 w-full"
-        v-model="value.query"
-        placeholder="Search..."
-      />
+      <div class="flex rounded-md shadow-sm w-full">
+        <span
+          class="
+            inline-flex
+            items-center
+            px-3
+            rounded-l-md
+            border border-r-0 border-gray-900
+            bg-gray-900
+            text-gray-500
+            sm:text-sm
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </span>
+        <input
+          type="search"
+          class="bg-gray-800 w-full"
+          v-model="value.query"
+          placeholder="Search..."
+        />
+      </div>
     </div>
   </div>
 </template>
