@@ -11,9 +11,11 @@
         text-gray-100
         font-bold
         text-2xl
+        flex
+        items-center
       "
     >
-      Logger UI
+      <div class="container mx-auto flex items-center">Logger UI</div>
     </div>
 
     <div class="flex flex-1 items-end">

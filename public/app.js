@@ -2097,6 +2097,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -26434,14 +26436,7 @@ var render = function () {
     "div",
     { staticClass: "h-screen flex flex-col py-16 px-2 overflow-y-scroll" },
     [
-      _c(
-        "div",
-        {
-          staticClass:
-            "\n      fixed\n      top-0\n      right-0\n      left-0\n      h-16\n      bg-black\n      text-gray-100\n      font-bold\n      text-2xl\n    ",
-        },
-        [_vm._v("\n    Logger UI\n  ")]
-      ),
+      _vm._m(0),
       _vm._v(" "),
       _c("div", { staticClass: "flex flex-1 items-end" }, [
         _c(
@@ -26635,7 +26630,25 @@ var render = function () {
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "\n      fixed\n      top-0\n      right-0\n      left-0\n      h-16\n      bg-black\n      text-gray-100\n      font-bold\n      text-2xl\n      flex\n      items-center\n    ",
+      },
+      [
+        _c("div", { staticClass: "container mx-auto flex items-center" }, [
+          _vm._v("Logger UI"),
+        ]),
+      ]
+    )
+  },
+]
 render._withStripped = true
 
 
@@ -26657,14 +26670,14 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "div",
-      {
-        staticClass:
-          "\n      fixed\n      bottom-0\n      right-0\n      left-0\n      h-16\n      bg-black\n      text-gray-100\n      font-bold\n      text-sm\n      flex\n      items-center\n      p-2\n    ",
-      },
-      [
+  return _c(
+    "div",
+    {
+      staticClass:
+        "\n    fixed\n    bottom-0\n    right-0\n    left-0\n    h-16\n    bg-black\n    text-gray-100\n    font-bold\n    text-sm\n    flex\n    items-center\n    p-2\n  ",
+    },
+    [
+      _c("div", { staticClass: "container mx-auto flex items-center" }, [
         _c(
           "select",
           {
@@ -26676,7 +26689,7 @@ var render = function () {
                 expression: "value.app_name",
               },
             ],
-            staticClass: "bg-gray-800 w-64 mr-2",
+            staticClass: "bg-gray-800 w-40 mr-2",
             on: {
               change: function ($event) {
                 var $$selectedVal = Array.prototype.filter
@@ -26718,7 +26731,7 @@ var render = function () {
                 expression: "value.channel",
               },
             ],
-            staticClass: "bg-gray-800 w-64 mr-2",
+            staticClass: "bg-gray-800 w-40 mr-2",
             on: {
               change: function ($event) {
                 var $$selectedVal = Array.prototype.filter
@@ -26760,7 +26773,7 @@ var render = function () {
                 expression: "value.level_name",
               },
             ],
-            staticClass: "bg-gray-800 w-64 mr-2",
+            staticClass: "bg-gray-800 w-40 mr-2",
             on: {
               change: function ($event) {
                 var $$selectedVal = Array.prototype.filter
@@ -26803,8 +26816,8 @@ var render = function () {
               expression: "value.query",
             },
           ],
-          staticClass: "bg-gray-800",
-          attrs: { type: "search", placeholder: "Type text here" },
+          staticClass: "bg-gray-800 w-full",
+          attrs: { type: "search", placeholder: "Search..." },
           domProps: { value: _vm.value.query },
           on: {
             input: function ($event) {
@@ -26815,9 +26828,9 @@ var render = function () {
             },
           },
         }),
-      ]
-    ),
-  ])
+      ]),
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

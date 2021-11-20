@@ -1,22 +1,22 @@
 <template>
-  <div>
-    <div
-      class="
-        fixed
-        bottom-0
-        right-0
-        left-0
-        h-16
-        bg-black
-        text-gray-100
-        font-bold
-        text-sm
-        flex
-        items-center
-        p-2
-      "
-    >
-      <select class="bg-gray-800 w-64 mr-2" v-model="value.app_name">
+  <div
+    class="
+      fixed
+      bottom-0
+      right-0
+      left-0
+      h-16
+      bg-black
+      text-gray-100
+      font-bold
+      text-sm
+      flex
+      items-center
+      p-2
+    "
+  >
+    <div class="container mx-auto flex items-center">
+      <select class="bg-gray-800 w-40 mr-2" v-model="value.app_name">
         <option value="">ALL</option>
         <option
           v-for="(app, index) in available_filters.app_names"
@@ -26,7 +26,7 @@
         </option>
       </select>
 
-      <select class="bg-gray-800 w-64 mr-2" v-model="value.channel">
+      <select class="bg-gray-800 w-40 mr-2" v-model="value.channel">
         <option value="">ALL</option>
         <option
           v-for="(channel, index) in available_filters.channels"
@@ -36,7 +36,7 @@
         </option>
       </select>
 
-      <select class="bg-gray-800 w-64 mr-2" v-model="value.level_name">
+      <select class="bg-gray-800 w-40 mr-2" v-model="value.level_name">
         <option value="">ALL</option>
         <option
           v-for="(level_name, index) in available_filters.level_names"
@@ -48,9 +48,9 @@
 
       <input
         type="search"
-        class="bg-gray-800"
+        class="bg-gray-800 w-full"
         v-model="value.query"
-        placeholder="Type text here"
+        placeholder="Search..."
       />
     </div>
   </div>
