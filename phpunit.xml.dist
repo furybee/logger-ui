@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         convertDeprecationsToExceptions="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+>
+    <testsuites>
+        <testsuite name="Logger UI Unit Test Suite">
+            <directory suffix=".php">./tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Logger UI Integration Test Suite">
+            <directory suffix=".php">./tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="APP_KEY" value="1ZqSYcCU32L72PNIeKFTbbf7m"/>
+    </php>
+</phpunit>

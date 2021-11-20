@@ -1,0 +1,53 @@
+{
+  "name": "furybee/logger-ui",
+  "description": "The Laravel Logger UI.",
+  "keywords": [
+    "laravel",
+    "artisan"
+  ],
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/furybee/logger-ui/issues",
+    "source": "https://github.com/furybee/logger-ui"
+  },
+  "authors": [
+    {
+      "name": "Sébastien FONTAINE",
+      "email": "hello@sebastienfontaine.me"
+    }
+  ],
+  "require": {
+    "php": "^7.3|^8.0",
+    "laravel/framework": "^6.0|^7.0|^8.0",
+    "symfony/yaml": "^4.3.4|^5.1.4"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^5.0|^6.0",
+    "pestphp/pest": "^1.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "FuryBee\\LoggerUi\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.x-dev"
+    },
+    "laravel": {
+      "providers": [
+        "FuryBee\\LoggerUi\\LoggerUiServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
