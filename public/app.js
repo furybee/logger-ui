@@ -2332,6 +2332,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "filter-bar",
   props: {
@@ -26774,7 +26783,7 @@ var render = function () {
                   expression: "value.app_name",
                 },
               ],
-              staticClass: "bg-gray-800 flex-1 w-40 mr-2",
+              staticClass: "bg-gray-800 flex-1 w-40 mr-2 rounded-r-md",
               on: {
                 change: function ($event) {
                   var $$selectedVal = Array.prototype.filter
@@ -26827,7 +26836,7 @@ var render = function () {
                   expression: "value.channel",
                 },
               ],
-              staticClass: "bg-gray-800 w-40 mr-2",
+              staticClass: "bg-gray-800 w-40 mr-2 rounded-r-md",
               on: {
                 change: function ($event) {
                   var $$selectedVal = Array.prototype.filter
@@ -26880,7 +26889,7 @@ var render = function () {
                   expression: "value.level_name",
                 },
               ],
-              staticClass: "bg-gray-800 w-40 mr-2",
+              staticClass: "bg-gray-800 w-40 mr-2 rounded-r-md",
               on: {
                 change: function ($event) {
                   var $$selectedVal = Array.prototype.filter
@@ -26955,7 +26964,7 @@ var render = function () {
                 expression: "value.query",
               },
             ],
-            staticClass: "bg-gray-800 w-full",
+            staticClass: "bg-gray-800 w-full rounded-r-md",
             attrs: { type: "search", placeholder: "Search..." },
             domProps: { value: _vm.value.query },
             on: {

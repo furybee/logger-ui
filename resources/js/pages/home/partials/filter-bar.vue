@@ -31,7 +31,10 @@
         >
           App
         </span>
-        <select class="bg-gray-800 flex-1 w-40 mr-2" v-model="value.app_name">
+        <select
+          class="bg-gray-800 flex-1 w-40 mr-2 rounded-r-md"
+          v-model="value.app_name"
+        >
           <option value="">ALL</option>
           <option
             v-for="(app, index) in available_filters.app_names"
@@ -57,7 +60,10 @@
         >
           Channel
         </span>
-        <select class="bg-gray-800 w-40 mr-2" v-model="value.channel">
+        <select
+          class="bg-gray-800 w-40 mr-2 rounded-r-md"
+          v-model="value.channel"
+        >
           <option value="">ALL</option>
           <option
             v-for="(channel, index) in available_filters.channels"
@@ -83,7 +89,10 @@
         >
           Level
         </span>
-        <select class="bg-gray-800 w-40 mr-2" v-model="value.level_name">
+        <select
+          class="bg-gray-800 w-40 mr-2 rounded-r-md"
+          v-model="value.level_name"
+        >
           <option value="">ALL</option>
           <option
             v-for="(level_name, index) in available_filters.level_names"
@@ -122,7 +131,7 @@
         </span>
         <input
           type="search"
-          class="bg-gray-800 w-full"
+          class="bg-gray-800 w-full rounded-r-md"
           v-model="value.query"
           placeholder="Search..."
         />
