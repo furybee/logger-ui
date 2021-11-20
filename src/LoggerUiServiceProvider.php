@@ -47,6 +47,7 @@ class LoggerUiServiceProvider extends ServiceProvider
             $this->commands([
                 Console\InstallCommand::class,
                 Console\PublishCommand::class,
+                Console\ClearLogCommand::class
             ]);
         }
     }

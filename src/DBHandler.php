@@ -36,13 +36,13 @@ class DBHandler extends AbstractProcessingHandler
     protected function write(array $record): void
     {
         $data = array(
+            'app_name'      => config('logger-ui.app.name'),
             'channel'       => $record['channel'],
             'level_name'    => $record['level_name'],
             'level'         => $record['level'],
             'message'       => $record['message'],
             'context'       => $this->formatContext($record['context']),
             'extra'         => json_encode($record['extra']),
-            'formatted'     => $record['formatted'],
             'user_id'       => auth()->id(),
             'logged_at'     => $record['datetime']->format('Y-m-d H:i:s.u'),
             'created_at'    => null,
@@ -56,6 +56,11 @@ class DBHandler extends AbstractProcessingHandler
         }, 20);
     }
 
+    /**
+     *
+     * @param array $context
+     * @return string
+     */
     protected function formatContext(array $context): string
     {
         if (isset($context['exception']) === false) {

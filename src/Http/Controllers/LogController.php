@@ -3,13 +3,26 @@
 namespace FuryBee\LoggerUi\Http\Controllers;
 
 use FuryBee\LoggerUi\Http\Resources\LogResource;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LogController
 {
+    const ALLOWED_FILTERS = [
+        'app_name',
+        'channel',
+        'level_name',
+        'query',
+    ];
+
+    const DEFAULT_FILTERS = [
+        'app_name' => '',
+        'channel' => '',
+        'level_name' => '',
+        'query' => '',
+    ];
+
     protected $connection;
     protected $table;
 
@@ -28,9 +41,13 @@ class LogController
 
     public function index(Request $request)
     {
-        $params = collect($request->all())->filter();
+        $filters = collect($request->only(self::ALLOWED_FILTERS))->filter()->toArray();
 
-        info($params);
+        $apps = $this
+            ->getBuilder()
+            ->selectRaw('DISTINCT(app_name) as apps')
+            ->pluck('apps')
+            ->toArray();
 
         $channels = $this
             ->getBuilder()
@@ -46,14 +63,17 @@ class LogController
 
         $lines = $this
             ->getBuilder()
-            ->when(isset($params['channel']) === true, function (Builder $builder) use ($params) {
-                $builder->where('channel', $params['channel']);
+            ->when(isset($filters['app_name']) === true, function (Builder $builder) use ($filters) {
+                $builder->where('app_name', $filters['app_name']);
             })
-            ->when(isset($params['level_name']) === true, function (Builder $builder) use ($params) {
-                $builder->where('level_name', $params['level_name']);
+            ->when(isset($filters['channel']) === true, function (Builder $builder) use ($filters) {
+                $builder->where('channel', $filters['channel']);
             })
-            ->when(isset($params['query']) === true, function (Builder $builder) use ($params) {
-                $query = $params['query'];
+            ->when(isset($filters['level_name']) === true, function (Builder $builder) use ($filters) {
+                $builder->where('level_name', $filters['level_name']);
+            })
+            ->when(isset($filters['query']) === true, function (Builder $builder) use ($filters) {
+                $query = $filters['query'];
 
                 $builder->where(function (Builder $builder) use ($query) {
                     $builder->where('message', 'LIKE', "%{$query}%");
@@ -68,9 +88,11 @@ class LogController
         return [
             'lines' => LogResource::collection($lines),
             'available_filters' => [
+                'app_names' => $apps,
                 'channels' => $channels,
                 'level_names' => $levelNames
-            ]
+            ],
+            'default_filters' => array_merge(self::DEFAULT_FILTERS, $filters)
         ];
     }
 }

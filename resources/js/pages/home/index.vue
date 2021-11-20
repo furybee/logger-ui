@@ -19,7 +19,7 @@
     <div class="flex flex-1 items-end">
       <ul class="flex flex-col w-full">
         <li class="flex mb-1 group" v-for="line in lines" :key="line.id">
-          <span
+          <!--span
             class="
               inline-flex
               items-center
@@ -34,10 +34,12 @@
               w-16
               mr-1
               h-6
+              cursor-pointer
             "
+            @click="filter.channel = line.channel"
           >
             {{ line.channel }}
-          </span>
+          </span-->
           <span
             class="
               inline-flex
@@ -47,13 +49,14 @@
               py-0.5
               rounded
               text-xs
-              bg-gray-800
-              text-gray-200
               font-bold
-              w-16
+              w-20
               mr-1
               h-6
+              cursor-pointer
             "
+            :class="badgeClass(line.level_name)"
+            @click="filter.level_name = line.level_name"
           >
             {{ line.level_name }}</span
           >
@@ -76,11 +79,11 @@
             {{ line.formatted_logged_at }}</span
           >
           <div class="flex-1 text-gray-400 group-hover:bg-gray-800">
-            <p>{{ line.message }}</p>
-            <div v-if="line.has_details_displayed" class="text-sm">
+            <p class="text-sm">{{ line.message }}</p>
+            <div v-if="line.has_details_displayed === true" class="text-sm">
               <div v-if="line.context.length !== 0">
                 <p class="font-bold">Context</p>
-                <ul class="ml-2 h-64 overflow-y-scroll">
+                <ul class="ml-2 m-h-64 overflow-y-auto">
                   <li
                     class="mb-1"
                     v-for="(value, key) of line.context"
@@ -125,6 +128,7 @@
             </div>
           </div>
           <a
+            v-if="line.context.length !== 0 || line.extra.length !== 0"
             href="#"
             class="
               ml-1
@@ -147,61 +151,38 @@
       </ul>
     </div>
 
-    <div
-      class="
-        fixed
-        bottom-0
-        right-0
-        left-0
-        h-16
-        bg-black
-        text-gray-100
-        font-bold
-        text-2xl
-        flex
-        items-center
-        p-2
-      "
-    >
-      <select class="bg-gray-800 w-64 mr-2" v-model="filter.channel">
-        <option value="">ALL</option>
-        <option
-          v-for="(channel, index) in available_filters.channels"
-          :key="index"
-        >
-          {{ channel }}
-        </option>
-      </select>
-
-      <select class="bg-gray-800 w-64 mr-2" v-model="filter.level_name">
-        <option value="">ALL</option>
-        <option
-          v-for="(level_name, index) in available_filters.level_names"
-          :key="index"
-        >
-          {{ level_name }}
-        </option>
-      </select>
-
-      <input type="search" class="bg-gray-800" v-model="filter.query" />
-    </div>
+    <filter-bar
+      v-if="available_filters !== undefined"
+      :available_filters="available_filters"
+      v-model="filter"
+    ></filter-bar>
   </div>
 </template>
 
 <script>
 import Clipboard from "../../mixins/clipboard";
+import filterBar from "./partials/filter-bar.vue";
 const axios = require("axios");
 
 export default {
+  components: { filterBar },
   mixins: [Clipboard],
   data() {
     return {
       lines: [],
       available_filters: {
+        app_names: [],
         channels: [],
         level_names: [],
       },
+      default_filters: {
+        app_name: "",
+        channel: "",
+        level_name: "",
+        query: "",
+      },
       filter: {
+        app_name: "",
         channel: "",
         level_name: "",
         query: "",
@@ -214,12 +195,16 @@ export default {
   },
   methods: {
     applyFilters() {
-      console.log(this.filter);
       axios
         .post("/logger-ui/logs", this.filter)
         .then((response) => {
           this.lines = response.data.lines;
           this.available_filters = response.data.available_filters;
+          this.default_filters = response.data.default_filters;
+
+          setTimeout(() => {
+            window.scrollTo(0, document.body.scrollHeight);
+          }, 400);
         })
         .catch((error) => {
           console.log(error);
@@ -228,11 +213,27 @@ export default {
     toggleDetails(line) {
       line.has_details_displayed = !line.has_details_displayed;
     },
+    badgeClass(levelName) {
+      switch (levelName) {
+        case "ERROR":
+        case "CRITICAL":
+        case "ALERT":
+        case "EMERGENCY":
+          return "bg-red-800 text-red-200";
+        case "WARN":
+        case "WARNING":
+          return "bg-yellow-700 text-yellow-200";
+        case "NOTICE":
+          return "bg-blue-800 text-blue-200";
+        default:
+          return "bg-gray-800 text-gray-200";
+      }
+    },
   },
   watch: {
     filter: {
       deep: true,
-      handler: function () {
+      handler: function (newValue, oldValue) {
         clearTimeout(this.timeoutId);
 
         this.timeoutId = setTimeout(() => {

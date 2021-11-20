@@ -11,7 +11,9 @@
         <title>Logger UI - {{ config('logger-ui.project') }} - {{ config('logger-ui.environment') }}</title>
 
         <!-- Style sheets -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+
         <link href="{{ asset(mix('app.css', 'vendor/logger-ui')) }}" rel="stylesheet" type="text/css" />
     </head>
     <body class="bg-gray-900">

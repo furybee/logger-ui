@@ -38,16 +38,18 @@ class CreateLoggerUiTable extends Migration
     {
         $this->schema->create($this->table, function (Blueprint $table) {
             $table->bigIncrements('id');
+
+            $table->string('app_name')->index();
             $table->string('channel')->index();
             $table->string('level_name')->index();
             $table->string('level')->index();
             $table->longText('message')->nullable();
             $table->longText('context')->nullable();
             $table->longText('extra')->nullable();
-            $table->longText('formatted')->nullable();
             $table->string('user_id')->nullable();
-            $table->dateTime('logged_at', 6);
-            $table->dateTime('created_at', 6);
+
+            $table->dateTime('logged_at', 6)->index();
+            $table->dateTime('created_at', 6)->index();
         });
     }
 

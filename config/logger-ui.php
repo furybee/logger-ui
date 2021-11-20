@@ -20,7 +20,9 @@ return [
         EnsureUserIsAuthorized::class,
     ],
 
-
+    'app' => [
+        'name' => env('APP_NAME', 'Laravel'),
+    ],
 
     'db' => [
         'connection' => env('DB_CONNECTION', null),
