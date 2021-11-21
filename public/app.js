@@ -2100,6 +2100,41 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2152,6 +2187,10 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
       this.is_live = true;
 
+      if (this.filter.page !== 1) {
+        this.filter.page = 1;
+      }
+
       if (skipApplyFilter === false) {
         this.applyFilters();
       }
@@ -2181,6 +2220,10 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     },
     applyFilters: function applyFilters() {
       var _this2 = this;
+
+      if (this.filter.page !== 1) {
+        this.pause();
+      }
 
       axios.post("/logger-ui/logs", this.filter).then(function (response) {
         _this2.pagination = response.data.pagination;
@@ -30749,41 +30792,43 @@ var render = function () {
             "\n      fixed\n      top-0\n      right-0\n      left-0\n      h-16\n      bg-grey-950\n      text-gray-100\n      font-bold\n      text-2xl\n      flex\n      items-center\n    ",
         },
         [
-          _c("div", { staticClass: "container mx-auto flex items-center" }, [
-            _vm._v("Logger UI"),
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "text-sm" }, [
-            _c(
-              "button",
-              {
-                on: {
-                  click: function ($event) {
-                    $event.preventDefault()
-                    return _vm.loadOldest.apply(null, arguments)
-                  },
-                },
-              },
-              [_vm._v("Load Oldest")]
-            ),
-            _vm._v(" -\n      "),
-            _c(
-              "button",
-              {
-                on: {
-                  click: function ($event) {
-                    $event.preventDefault()
-                    return _vm.loadNewest.apply(null, arguments)
-                  },
-                },
-              },
-              [_vm._v("Load Newest")]
-            ),
-            _vm._v(" -\n\n      "),
-            _vm.is_live
-              ? _c(
+          _c(
+            "div",
+            {
+              staticClass:
+                "container mx-auto flex items-center justify-between",
+            },
+            [
+              _c("h1", [_vm._v("Logger UI")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "text-sm flex items-center" }, [
+                _c(
                   "button",
                   {
+                    staticClass: "mr-3",
+                    on: {
+                      click: function ($event) {
+                        $event.preventDefault()
+                        return _vm.loadOldest.apply(null, arguments)
+                      },
+                    },
+                  },
+                  [_vm._v("Load Oldest")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.is_live === true,
+                        expression: "is_live === true",
+                      },
+                    ],
+                    staticClass:
+                      "border-green-400 border-4 rounded-full focus:outline-none",
                     on: {
                       click: function ($event) {
                         $event.preventDefault()
@@ -30791,11 +30836,43 @@ var render = function () {
                       },
                     },
                   },
-                  [_vm._v("Pause")]
-                )
-              : _c(
+                  [
+                    _c(
+                      "svg",
+                      {
+                        staticClass: "h-10 w-10",
+                        attrs: {
+                          xmlns: "http://www.w3.org/2000/svg",
+                          viewBox: "0 0 20 20",
+                          fill: "currentColor",
+                        },
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            "fill-rule": "evenodd",
+                            d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z",
+                            "clip-rule": "evenodd",
+                          },
+                        }),
+                      ]
+                    ),
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
                   "button",
                   {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.is_live === false,
+                        expression: "is_live === false",
+                      },
+                    ],
+                    staticClass:
+                      "border-yellow-400 border-2 rounded-full focus:outline-none",
                     on: {
                       click: function ($event) {
                         $event.preventDefault()
@@ -30803,9 +30880,32 @@ var render = function () {
                       },
                     },
                   },
-                  [_vm._v("Back To Live")]
+                  [
+                    _c(
+                      "svg",
+                      {
+                        staticClass: "h-10 w-10",
+                        attrs: {
+                          xmlns: "http://www.w3.org/2000/svg",
+                          viewBox: "0 0 20 20",
+                          fill: "currentColor",
+                        },
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            "fill-rule": "evenodd",
+                            d: "M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z",
+                            "clip-rule": "evenodd",
+                          },
+                        }),
+                      ]
+                    ),
+                  ]
                 ),
-          ]),
+              ]),
+            ]
+          ),
         ]
       ),
       _vm._v(" "),

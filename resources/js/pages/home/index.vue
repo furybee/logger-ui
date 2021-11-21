@@ -15,14 +15,49 @@
         items-center
       "
     >
-      <div class="container mx-auto flex items-center">Logger UI</div>
+      <div class="container mx-auto flex items-center justify-between">
+        <h1>Logger UI</h1>
 
-      <div class="text-sm">
-        <button @click.prevent="loadOldest">Load Oldest</button> -
-        <button @click.prevent="loadNewest">Load Newest</button> -
+        <div class="text-sm flex items-center">
+          <button class="mr-3" @click.prevent="loadOldest">Load Oldest</button>
 
-        <button v-if="is_live" @click.prevent="pause">Pause</button>
-        <button v-else @click.prevent="play">Back To Live</button>
+          <button
+            class="border-green-400 border-4 rounded-full focus:outline-none"
+            v-show="is_live === true"
+            @click.prevent="pause"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-10 w-10"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="border-yellow-400 border-2 rounded-full focus:outline-none"
+            v-show="is_live === false"
+            @click.prevent="play"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-10 w-10"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -201,6 +236,10 @@ export default {
     play(skipApplyFilter) {
       this.is_live = true;
 
+      if (this.filter.page !== 1) {
+        this.filter.page = 1;
+      }
+
       if (skipApplyFilter === false) {
         this.applyFilters();
       }
@@ -231,6 +270,10 @@ export default {
       this.filter.page--;
     },
     applyFilters() {
+      if (this.filter.page !== 1) {
+        this.pause();
+      }
+
       axios
         .post("/logger-ui/logs", this.filter)
         .then((response) => {
