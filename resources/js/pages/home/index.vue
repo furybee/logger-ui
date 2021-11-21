@@ -22,7 +22,7 @@
           <button class="mr-3" @click.prevent="loadOldest">Load Oldest</button>
 
           <button
-            class="border-green-400 border-4 rounded-full focus:outline-none"
+            class="border-green-400 border-2 rounded-full focus:outline-none"
             v-show="is_live === true"
             @click.prevent="pause"
           >

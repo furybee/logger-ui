@@ -30828,7 +30828,7 @@ var render = function () {
                       },
                     ],
                     staticClass:
-                      "border-green-400 border-4 rounded-full focus:outline-none",
+                      "border-green-400 border-2 rounded-full focus:outline-none",
                     on: {
                       click: function ($event) {
                         $event.preventDefault()
