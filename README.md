@@ -1,5 +1,7 @@
 # Logger UI
 
+![logger-ui](https://user-images.githubusercontent.com/45472257/142772523-e79ff302-664e-456b-914d-fa40bd39da5b.png)
+
 ## Installing The Logger UI Dashboard
 
 This package provides a beautiful dashboard through your application that allows you to list all availables artisan commands. The Logger UI dashboard package can be installed in your project using Composer:
