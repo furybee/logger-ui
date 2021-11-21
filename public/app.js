@@ -2095,6 +2095,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -2108,6 +2113,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
   mixins: [_mixins_clipboard__WEBPACK_IMPORTED_MODULE_1__["default"]],
   data: function data() {
     return {
+      is_live: true,
       lines: [],
       allowedFilters: ["app_name", "channel", "level_name", "query", "page"],
       available_filters: {
@@ -2124,7 +2130,8 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
         query: "",
         page: 1
       },
-      timeoutId: undefined
+      timeoutId: undefined,
+      intervalTimeout: null
     };
   },
   mounted: function mounted() {
@@ -2137,8 +2144,26 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       filters[key] = value;
     });
     this.filter = filters;
+    this.play(true);
   },
   methods: {
+    play: function play(skipApplyFilter) {
+      var _this = this;
+
+      this.is_live = true;
+
+      if (skipApplyFilter === false) {
+        this.applyFilters();
+      }
+
+      this.intervalTimeout = setInterval(function () {
+        _this.applyFilters();
+      }, 10000);
+    },
+    pause: function pause() {
+      this.is_live = false;
+      clearInterval(this.intervalTimeout);
+    },
     loadOldest: function loadOldest() {
       if (this.pagination.next_page_url === null) {
         console.log("No more data..");
@@ -2155,22 +2180,22 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       this.filter.page--;
     },
     applyFilters: function applyFilters() {
-      var _this = this;
+      var _this2 = this;
 
       axios.post("/logger-ui/logs", this.filter).then(function (response) {
-        _this.pagination = response.data.pagination;
-        _this.lines = collect_js__WEBPACK_IMPORTED_MODULE_0___default()(_this.lines).when(_this.filter.app_name !== "", function (lines) {
-          return lines.where("app_name", _this.filter.app_name);
-        }).when(_this.filter.channel !== "", function (lines) {
-          return lines.where("channel", _this.filter.channel);
-        }).when(_this.filter.level_name !== "", function (lines) {
-          return lines.where("level_name", _this.filter.level_name);
-        }).when(_this.filter.query !== "", function (lines) {
+        _this2.pagination = response.data.pagination;
+        _this2.lines = collect_js__WEBPACK_IMPORTED_MODULE_0___default()(_this2.lines).when(_this2.filter.app_name !== "", function (lines) {
+          return lines.where("app_name", _this2.filter.app_name);
+        }).when(_this2.filter.channel !== "", function (lines) {
+          return lines.where("channel", _this2.filter.channel);
+        }).when(_this2.filter.level_name !== "", function (lines) {
+          return lines.where("level_name", _this2.filter.level_name);
+        }).when(_this2.filter.query !== "", function (lines) {
           return lines.filter(function (line) {
-            return line.message.includes(_this.filter.query) || JSON.stringify(line.context).includes(_this.filter.query);
+            return line.message.includes(_this2.filter.query) || JSON.stringify(line.context).includes(_this2.filter.query);
           });
         }).merge(response.data.lines).unique("id").sortBy("logged_at").all();
-        _this.available_filters = response.data.available_filters;
+        _this2.available_filters = response.data.available_filters;
         setTimeout(function () {
           window.scrollTo(0, document.body.scrollHeight);
         }, 400);
@@ -2206,7 +2231,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     filter: {
       deep: true,
       handler: function handler(newValue, oldValue) {
-        var _this2 = this;
+        var _this3 = this;
 
         clearTimeout(this.timeoutId);
         var url = new URL(window.location);
@@ -2231,7 +2256,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
         window.history.pushState({}, "", url);
         this.timeoutId = setTimeout(function () {
-          _this2.applyFilters();
+          _this3.applyFilters();
         }, 500);
       }
     }
@@ -30728,31 +30753,59 @@ var render = function () {
             _vm._v("Logger UI"),
           ]),
           _vm._v(" "),
-          _c(
-            "button",
-            {
-              on: {
-                click: function ($event) {
-                  $event.preventDefault()
-                  return _vm.loadOldest.apply(null, arguments)
+          _c("div", { staticClass: "text-sm" }, [
+            _c(
+              "button",
+              {
+                on: {
+                  click: function ($event) {
+                    $event.preventDefault()
+                    return _vm.loadOldest.apply(null, arguments)
+                  },
                 },
               },
-            },
-            [_vm._v("Load Oldest")]
-          ),
-          _vm._v(" -\n    "),
-          _c(
-            "button",
-            {
-              on: {
-                click: function ($event) {
-                  $event.preventDefault()
-                  return _vm.loadNewest.apply(null, arguments)
+              [_vm._v("Load Oldest")]
+            ),
+            _vm._v(" -\n      "),
+            _c(
+              "button",
+              {
+                on: {
+                  click: function ($event) {
+                    $event.preventDefault()
+                    return _vm.loadNewest.apply(null, arguments)
+                  },
                 },
               },
-            },
-            [_vm._v("Load Newest")]
-          ),
+              [_vm._v("Load Newest")]
+            ),
+            _vm._v(" -\n\n      "),
+            _vm.is_live
+              ? _c(
+                  "button",
+                  {
+                    on: {
+                      click: function ($event) {
+                        $event.preventDefault()
+                        return _vm.pause.apply(null, arguments)
+                      },
+                    },
+                  },
+                  [_vm._v("Pause")]
+                )
+              : _c(
+                  "button",
+                  {
+                    on: {
+                      click: function ($event) {
+                        $event.preventDefault()
+                        return _vm.play.apply(null, arguments)
+                      },
+                    },
+                  },
+                  [_vm._v("Back To Live")]
+                ),
+          ]),
         ]
       ),
       _vm._v(" "),

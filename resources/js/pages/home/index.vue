@@ -17,8 +17,13 @@
     >
       <div class="container mx-auto flex items-center">Logger UI</div>
 
-      <button @click.prevent="loadOldest">Load Oldest</button> -
-      <button @click.prevent="loadNewest">Load Newest</button>
+      <div class="text-sm">
+        <button @click.prevent="loadOldest">Load Oldest</button> -
+        <button @click.prevent="loadNewest">Load Newest</button> -
+
+        <button v-if="is_live" @click.prevent="pause">Pause</button>
+        <button v-else @click.prevent="play">Back To Live</button>
+      </div>
     </div>
 
     <div class="flex flex-1 items-end py-20">
@@ -154,6 +159,7 @@ export default {
   mixins: [Clipboard],
   data() {
     return {
+      is_live: true,
       lines: [],
       allowedFilters: ["app_name", "channel", "level_name", "query", "page"],
       available_filters: {
@@ -171,6 +177,7 @@ export default {
         page: 1,
       },
       timeoutId: undefined,
+      intervalTimeout: null,
     };
   },
   mounted() {
@@ -187,8 +194,26 @@ export default {
     });
 
     this.filter = filters;
+
+    this.play(true);
   },
   methods: {
+    play(skipApplyFilter) {
+      this.is_live = true;
+
+      if (skipApplyFilter === false) {
+        this.applyFilters();
+      }
+
+      this.intervalTimeout = setInterval(() => {
+        this.applyFilters();
+      }, 10000);
+    },
+    pause() {
+      this.is_live = false;
+
+      clearInterval(this.intervalTimeout);
+    },
     loadOldest() {
       if (this.pagination.next_page_url === null) {
         console.log("No more data..");
