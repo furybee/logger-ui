@@ -6,7 +6,7 @@
       right-0
       left-0
       h-16
-      bg-black
+      bg-grey-950
       text-gray-100
       font-bold
       text-sm

@@ -6,6 +6,11 @@ module.exports = {
     },
     theme: {
         extend: {
+            colors: {
+                grey: {
+                    '950': '#0e1420'
+                }
+            },
             fontFamily: {
                 sans: ['Source Code Pro', ...defaultTheme.fontFamily.sans],
             },

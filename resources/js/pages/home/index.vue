@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex flex-col py-16 px-2 overflow-y-scroll">
+  <div class="h-screen flex flex-col px-2">
     <div
       class="
         fixed
@@ -7,7 +7,7 @@
         right-0
         left-0
         h-16
-        bg-black
+        bg-grey-950
         text-gray-100
         font-bold
         text-2xl
@@ -16,32 +16,14 @@
       "
     >
       <div class="container mx-auto flex items-center">Logger UI</div>
+
+      <button @click.prevent="loadOldest">Load Oldest</button> -
+      <button @click.prevent="loadNewest">Load Newest</button>
     </div>
 
-    <div class="flex flex-1 items-end">
+    <div class="flex flex-1 items-end py-20">
       <ul class="flex flex-col w-full">
         <li class="flex mb-1 group" v-for="line in lines" :key="line.id">
-          <!--span
-            class="
-              inline-flex
-              items-center
-              justify-center
-              px-2
-              py-0.5
-              rounded
-              text-xs
-              bg-gray-800
-              text-gray-200
-              font-bold
-              w-16
-              mr-1
-              h-6
-              cursor-pointer
-            "
-            @click="filter.channel = line.channel"
-          >
-            {{ line.channel }}
-          </span-->
           <span
             class="
               inline-flex
@@ -57,7 +39,7 @@
               h-6
               cursor-pointer
             "
-            :class="badgeClass(line.level_name)"
+            :class="badgeClass(line.level)"
             @click="filter.level_name = line.level_name"
           >
             {{ line.level_name }}</span
@@ -162,6 +144,7 @@
 </template>
 
 <script>
+import collect from "collect.js";
 import Clipboard from "../../mixins/clipboard";
 import filterBar from "./partials/filter-bar.vue";
 const axios = require("axios");
@@ -172,37 +155,86 @@ export default {
   data() {
     return {
       lines: [],
+      allowedFilters: ["app_name", "channel", "level_name", "query", "page"],
       available_filters: {
         app_names: [],
         channels: [],
         level_names: [],
       },
-      default_filters: {
-        app_name: "",
-        channel: "",
-        level_name: "",
-        query: "",
-      },
+      loadedPages: [],
+      pagination: null,
       filter: {
         app_name: "",
         channel: "",
         level_name: "",
         query: "",
+        page: 1,
       },
       timeoutId: undefined,
     };
   },
   mounted() {
-    this.applyFilters();
+    const url = new URL(window.location);
+
+    const filters = {};
+
+    this.allowedFilters.forEach((value) => {
+      filters[value] = "";
+    });
+
+    url.searchParams.forEach((value, key) => {
+      filters[key] = value;
+    });
+
+    this.filter = filters;
   },
   methods: {
+    loadOldest() {
+      if (this.pagination.next_page_url === null) {
+        console.log("No more data..");
+      }
+
+      this.filter.page++;
+    },
+    loadNewest() {
+      if (this.pagination.prev_page_url === null) {
+        console.log("No more data..");
+
+        this.filter.page = 1;
+      }
+
+      this.filter.page--;
+    },
     applyFilters() {
       axios
         .post("/logger-ui/logs", this.filter)
         .then((response) => {
-          this.lines = response.data.lines;
+          this.pagination = response.data.pagination;
+
+          this.lines = collect(this.lines)
+            .when(this.filter.app_name !== "", (lines) => {
+              return lines.where("app_name", this.filter.app_name);
+            })
+            .when(this.filter.channel !== "", (lines) => {
+              return lines.where("channel", this.filter.channel);
+            })
+            .when(this.filter.level_name !== "", (lines) => {
+              return lines.where("level_name", this.filter.level_name);
+            })
+            .when(this.filter.query !== "", (lines) => {
+              return lines.filter((line) => {
+                return (
+                  line.message.includes(this.filter.query) ||
+                  JSON.stringify(line.context).includes(this.filter.query)
+                );
+              });
+            })
+            .merge(response.data.lines)
+            .unique("id")
+            .sortBy("logged_at")
+            .all();
+
           this.available_filters = response.data.available_filters;
-          this.default_filters = response.data.default_filters;
 
           setTimeout(() => {
             window.scrollTo(0, document.body.scrollHeight);
@@ -215,28 +247,55 @@ export default {
     toggleDetails(line) {
       line.has_details_displayed = !line.has_details_displayed;
     },
-    badgeClass(levelName) {
-      switch (levelName) {
-        case "ERROR":
-        case "CRITICAL":
-        case "ALERT":
-        case "EMERGENCY":
-          return "bg-red-800 text-red-200";
-        case "WARN":
-        case "WARNING":
-          return "bg-yellow-700 text-yellow-200";
-        case "NOTICE":
-          return "bg-blue-800 text-blue-200";
-        default:
-          return "bg-gray-800 text-gray-200";
+    badgeClass(level) {
+      if (level >= 400) {
+        return "bg-red-800 text-red-200";
       }
+
+      if (level >= 300) {
+        return "bg-yellow-700 text-yellow-200";
+      }
+
+      if (level >= 250) {
+        return "bg-blue-800 text-blue-200";
+      }
+
+      return "bg-gray-800 text-gray-200";
     },
   },
   watch: {
+    "filter.page": {
+      handler: function (newValue) {
+        this.loadedPages = collect(this.loadedPages)
+          .push(newValue)
+          .unique()
+          .all();
+      },
+    },
     filter: {
       deep: true,
       handler: function (newValue, oldValue) {
         clearTimeout(this.timeoutId);
+
+        const url = new URL(window.location);
+
+        for (const [key, value] of Object.entries(newValue)) {
+          if (typeof value === "number" && value <= 0) {
+            url.searchParams.delete(key);
+
+            continue;
+          }
+
+          if (typeof value === "string" && value.trim().length === 0) {
+            url.searchParams.delete(key);
+
+            continue;
+          }
+
+          url.searchParams.set(key, value);
+        }
+
+        window.history.pushState({}, "", url);
 
         this.timeoutId = setTimeout(() => {
           this.applyFilters();

@@ -14,6 +14,7 @@ class LogController
         'channel',
         'level_name',
         'query',
+        'per_page',
     ];
 
     const DEFAULT_FILTERS = [
@@ -21,6 +22,7 @@ class LogController
         'channel' => '',
         'level_name' => '',
         'query' => '',
+        'per_page' => 300,
     ];
 
     protected $connection;
@@ -34,14 +36,29 @@ class LogController
         $this->table = $dbConfig['table'];
     }
 
+    /**
+     *
+     * @return Builder
+     */
     private function getBuilder(): Builder
     {
         return DB::connection($this->connection)->table($this->table);
     }
 
+    /**
+     *
+     * @param Request $request
+     * @return void
+     */
     public function index(Request $request)
     {
-        $filters = collect($request->only(self::ALLOWED_FILTERS))->filter()->toArray();
+        $filters = collect($request->only(self::ALLOWED_FILTERS))
+            ->filter()
+            ->toArray();
+
+        $filters = collect($request->only(self::ALLOWED_FILTERS))
+            ->filter()
+            ->toArray();
 
         $apps = $this
             ->getBuilder()
@@ -67,7 +84,7 @@ class LogController
             ->values()
             ->toArray();
 
-        $lines = $this
+        $paginator = $this
             ->getBuilder()
             ->when(isset($filters['app_name']) === true, function (Builder $builder) use ($filters) {
                 $builder->where('app_name', $filters['app_name']);
@@ -87,18 +104,23 @@ class LogController
                 });
             })
             ->orderByDesc('logged_at')
-            ->limit(100)
-            ->get()
-            ->sortBy('logged_at');
+            ->simplePaginate(self::DEFAULT_FILTERS['per_page'])
+            ->setPageName('page');
+
+        $paginator = $paginator->toArray();
+
+        $data = $paginator['data'];
+
+        unset($paginator['data']);
 
         return [
-            'lines' => LogResource::collection($lines),
+            'pagination' => $paginator,
+            'lines' => LogResource::collection($data),
             'available_filters' => [
                 'app_names' => $apps,
                 'channels' => $channels,
                 'level_names' => $levelNames
             ],
-            'default_filters' => array_merge(self::DEFAULT_FILTERS, $filters)
         ];
     }
 }
