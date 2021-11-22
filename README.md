@@ -4,7 +4,7 @@
 
 ## Installing The Logger UI Dashboard
 
-This package provides a beautiful dashboard through your application that allows you to list all availables artisan commands. The Logger UI dashboard package can be installed in your project using Composer:
+This package provides a beautiful dashboard through your application that allows you to send logs to a database and show them. The Logger UI dashboard package can be installed in your project using Composer:
 
 ```sh
 composer require furybee/logger-ui
