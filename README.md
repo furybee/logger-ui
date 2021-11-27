@@ -16,8 +16,10 @@ After installing Logger UI, you may publish its assets using the `logger-ui:inst
 php artisan logger-ui:install
 ```
 
+Note : if you are using SingleStore, add `--singlestore=on` option.
+
 ```sh
-php artisan migrate
+php artisan logger-ui:migrate
 ```
 
 ## Setup Logger UI as default channel
@@ -91,12 +93,12 @@ Once the configuration file has been published, you may edit Logger UI's middlew
 
 ### Database
 
-If needed, you can update DB Connection and the table where logger-ui will store the data.
+If needed, you may update DB Connection and the Table where logger-ui will store the data.
 
 ```php
 'db' => [
     'connection' => env('DB_CONNECTION', null),
-    'table' => env('DB_LOGGER_UI_TABLE', 'logger_ui_entries'),
+    'table' => env('DB_LOGGER_UI_TABLE', 'logger_ui_entries')
 ],
 ```
 
