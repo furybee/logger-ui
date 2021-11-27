@@ -107,7 +107,10 @@
             <div v-if="line.has_details_displayed === true" class="text-sm">
               <div v-if="line.context.length !== 0">
                 <p class="font-bold">Context</p>
-                <ul class="ml-2 m-h-64 overflow-y-auto">
+                <p v-if="typeof line.context === 'string'">
+                  {{ line.context }}
+                </p>
+                <ul v-else class="ml-2 m-h-64 overflow-y-auto">
                   <li
                     class="mb-1"
                     v-for="(value, key) of line.context"
@@ -141,7 +144,10 @@
 
               <div v-if="line.extra.length !== 0">
                 <p class="font-bold">Extra</p>
-                <ul>
+                <p v-if="typeof line.extra === 'string'">
+                  {{ line.extra }}
+                </p>
+                <ul v-else>
                   <li v-for="(value, key) in line.extra" :key="key">
                     <span class="font-bold">{{ key }}:</span>
                     <div class="whitespace-normal" v-html="value"></div>
@@ -196,7 +202,14 @@ export default {
     return {
       is_live: true,
       lines: [],
-      allowedFilters: ["app_name", "channel", "level_name", "query", "page"],
+      allowedFilters: [
+        "date",
+        "app_name",
+        "channel",
+        "level_name",
+        "query",
+        "page",
+      ],
       available_filters: {
         app_names: [],
         channels: [],
@@ -205,6 +218,7 @@ export default {
       loadedPages: [],
       pagination: null,
       filter: {
+        date: "",
         app_name: "",
         channel: "",
         level_name: "",
@@ -280,6 +294,9 @@ export default {
           this.pagination = response.data.pagination;
 
           this.lines = collect(this.lines)
+            .when(this.filter.date !== "", (lines) => {
+              return lines.where("logged_at", "<=", this.filter.date);
+            })
             .when(this.filter.app_name !== "", (lines) => {
               return lines.where("app_name", this.filter.app_name);
             })

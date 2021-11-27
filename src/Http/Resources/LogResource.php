@@ -24,7 +24,7 @@ class LogResource extends JsonResource
             'level' => $this->resource->level,
             'message' => $this->resource->message,
             'context' => $this->formatContext(),
-            'extra' => json_decode($this->resource->extra, true),
+            'extra' => $this->formatExtra(),
             'user_id' => $this->resource->user_id,
             'logged_at' => $this->resource->logged_at,
             'formatted_logged_at' => $this->formattedLogggedAt(),
@@ -37,15 +37,31 @@ class LogResource extends JsonResource
         return Carbon::parse($this->resource->logged_at)->format('M d H:i:s');
     }
 
-
-    private function formatContext(): array
+    private function formatContext()
     {
         $context = json_decode($this->resource->context, true);
 
         if (isset($context['exception']['stacktrace']) === true && is_string($context['exception']['stacktrace']) === true) {
             $context['exception']['stacktrace'] = str_replace("\n", '<br />', $context['exception']['stacktrace']);
+
+            return $context;
+        }
+
+        if (isset($context[0]) === true) {
+            return $this->resource->context;
         }
 
         return $context;
+    }
+
+    private function formatExtra()
+    {
+        $extra = json_decode($this->resource->extra, true);
+
+        if (isset($extra[0]) === true) {
+            return $this->resource->extra;
+        }
+
+        return $extra;
     }
 }

@@ -47,7 +47,8 @@ class LoggerUiServiceProvider extends ServiceProvider
             $this->commands([
                 Console\InstallCommand::class,
                 Console\PublishCommand::class,
-                Console\ClearLogCommand::class
+                Console\ClearLogCommand::class,
+                Console\MigrateCommand::class
             ]);
         }
     }
@@ -69,6 +70,10 @@ class LoggerUiServiceProvider extends ServiceProvider
      */
     private function ensureEnvExists()
     {
+        if ($this->app->runningInConsole()) {
+            return;
+        }
+
         $dbConfig = config('logger-ui.db');
 
         return isset($dbConfig)

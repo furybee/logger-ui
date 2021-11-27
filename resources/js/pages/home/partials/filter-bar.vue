@@ -29,6 +29,29 @@
             sm:text-sm
           "
         >
+          Date
+        </span>
+        <input
+          type="date"
+          :max="new Date().toISOString().split('T')[0]"
+          class="bg-gray-800 flex-1 w-40 mr-2 rounded-r-md"
+          v-model="value.date"
+        />
+      </div>
+
+      <div class="flex rounded-md shadow-sm">
+        <span
+          class="
+            inline-flex
+            items-center
+            px-3
+            rounded-l-md
+            border border-r-0 border-gray-900
+            bg-gray-900
+            text-gray-500
+            sm:text-sm
+          "
+        >
           App
         </span>
         <select

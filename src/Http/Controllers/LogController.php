@@ -2,14 +2,18 @@
 
 namespace FuryBee\LoggerUi\Http\Controllers;
 
+use Carbon\Carbon;
+use FuryBee\LoggerUi\Http\Requests\LogIndexRequest;
 use FuryBee\LoggerUi\Http\Resources\LogResource;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class LogController
 {
     const ALLOWED_FILTERS = [
+        'date',
         'app_name',
         'channel',
         'level_name',
@@ -18,6 +22,7 @@ class LogController
     ];
 
     const DEFAULT_FILTERS = [
+        'date' => '',
         'app_name' => '',
         'channel' => '',
         'level_name' => '',
@@ -52,6 +57,19 @@ class LogController
      */
     public function index(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'date' => 'nullable|date',
+            'app_name' => 'nullable|string',
+            'channel' => 'nullable|string',
+            'level_name' => 'nullable|string',
+            'query' => 'nullable|string',
+            'page' => 'nullable|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response('Validation Error.', 422);
+        }
+
         $filters = collect($request->only(self::ALLOWED_FILTERS))
             ->filter()
             ->toArray();
@@ -86,6 +104,11 @@ class LogController
 
         $paginator = $this
             ->getBuilder()
+            ->when(isset($filters['date']) === true, function (Builder $builder) use ($filters) {
+                $date = Carbon::createFromFormat('Y-m-d', $filters['date'])->endOfDay();
+
+                $builder->where('logged_at', '<=', $date);
+            })
             ->when(isset($filters['app_name']) === true, function (Builder $builder) use ($filters) {
                 $builder->where('app_name', $filters['app_name']);
             })

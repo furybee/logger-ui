@@ -1,0 +1,21 @@
+CREATE REFERENCE TABLE IF NOT EXISTS :logger_ui_table_name: (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `app_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `channel` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `level_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `level` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` longtext COLLATE utf8mb4_unicode_ci,
+  `context` longtext COLLATE utf8mb4_unicode_ci,
+  `extra` longtext COLLATE utf8mb4_unicode_ci,
+  `user_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `logged_at` datetime(6) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  PRIMARY KEY `id` (`id`),
+  KEY `logged_at` (`logged_at`) USING CLUSTERED COLUMNSTORE,
+  KEY `logger_ui_entries_app_name_index` (`app_name`) USING HASH,
+  KEY `logger_ui_entries_channel_index` (`channel`) USING HASH,
+  KEY `logger_ui_entries_level_name_index` (`level_name`) USING HASH,
+  KEY `logger_ui_entries_level_index` (`level`) USING HASH,
+  KEY `logger_ui_entries_logged_at_index` (`logged_at`) USING HASH,
+  KEY `logger_ui_entries_created_at_index` (`created_at`) USING HASH
+)

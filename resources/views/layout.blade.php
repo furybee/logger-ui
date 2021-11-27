@@ -15,6 +15,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
 
         <link href="{{ asset(mix('app.css', 'vendor/logger-ui')) }}" rel="stylesheet" type="text/css" />
+        <link rel="icon" type="image/png" href="{{ asset('vendor/logger-ui/favicon.png') }}" />
     </head>
     <body class="bg-gray-900">
         <div id="logger-ui" class="main">
