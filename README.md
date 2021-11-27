@@ -1,6 +1,6 @@
 # Logger UI
 
-![logger-ui](https://user-images.githubusercontent.com/45472257/142772523-e79ff302-664e-456b-914d-fa40bd39da5b.png)
+![home](https://user-images.githubusercontent.com/45472257/143687576-d6e7af7b-a27d-4454-a01f-b833c2781829.png)
 
 ## Installing The Logger UI Dashboard
 
