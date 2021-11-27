@@ -69,6 +69,10 @@ class LoggerUiServiceProvider extends ServiceProvider
      */
     private function ensureEnvExists()
     {
+        if ($this->app->runningInConsole()) {
+            return;
+        }
+
         $dbConfig = config('logger-ui.db');
 
         return isset($dbConfig)

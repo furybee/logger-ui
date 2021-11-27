@@ -10,12 +10,6 @@ This package provides a beautiful dashboard through your application that allows
 composer require furybee/logger-ui
 ```
 
-After installing Logger UI, you ha:
-
-```sh
-php artisan logger-ui:install
-```
-
 After installing Logger UI, you may publish its assets using the `logger-ui:install` Artisan command. You should also run the `migrate` command in order to create the table needed to store Logger UI's data:
 
 ```sh
@@ -24,6 +18,25 @@ php artisan logger-ui:install
 
 ```sh
 php artisan migrate
+```
+
+## Setup Logger UI as default channel
+
+In your `config/logging.php` file, add the following channel
+
+```php
+'logger-ui' => [
+    'driver' => 'custom',
+    'path' => DBHandler::class,
+    'via' => DBLogger::class,
+    'level' => 'debug',
+],
+```
+
+Then edit your `LOG_CHANNEL` env key for `logger-ui`
+
+```php
+LOG_CHANNEL=logger-ui
 ```
 
 ## Dashboard Authorization
@@ -66,15 +79,30 @@ To keep the assets up-to-date and avoid issues in future updates, you may add th
 }
 ```
 
-## Customizing Middleware
+## Customization
 
-If needed, you can customize the middleware stack used by Logger UI routes by updating your `config/logger-ui.php` file. If you have not published Logger UI's configuration file, you may do so using the `vendor:publish` Artisan command:
+If you have not published Logger UI's configuration file, you may do so using the `vendor:publish` Artisan command:
 
 ```sh
 php artisan vendor:publish --tag=logger-ui-config
 ```
 
-Once the configuration file has been published, you may edit Logger UI's middleware by tweaking the middleware configuration option within this file:
+Once the configuration file has been published, you may edit Logger UI's middleware or database by tweaking the middleware configuration option within this file.
+
+### Database
+
+If needed, you can update DB Connection and the table where logger-ui will store the data.
+
+```php
+'db' => [
+    'connection' => env('DB_CONNECTION', null),
+    'table' => env('DB_LOGGER_UI_TABLE', 'logger_ui_entries'),
+],
+```
+
+### Middleware
+
+If needed, you can customize the middleware stack used by Logger UI routes by updating your `config/logger-ui.php` file.
 
 ```php
 /*
