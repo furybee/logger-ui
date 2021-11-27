@@ -24,7 +24,7 @@ php artisan logger-ui:migrate
 
 ## Setup Logger UI as default channel
 
-In your `config/logging.php` file, add the following channel
+In your `config/logging.php` file, add the following channel:
 
 ```php
 'logger-ui' => [
@@ -35,7 +35,7 @@ In your `config/logging.php` file, add the following channel
 ],
 ```
 
-Then edit your `LOG_CHANNEL` env key for `logger-ui`
+Then edit your `LOG_CHANNEL` env key for `logger-ui`:
 
 ```php
 LOG_CHANNEL=logger-ui
