@@ -2135,6 +2135,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2150,7 +2156,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     return {
       is_live: true,
       lines: [],
-      allowedFilters: ["app_name", "channel", "level_name", "query", "page"],
+      allowedFilters: ["date", "app_name", "channel", "level_name", "query", "page"],
       available_filters: {
         app_names: [],
         channels: [],
@@ -2159,6 +2165,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       loadedPages: [],
       pagination: null,
       filter: {
+        date: "",
         app_name: "",
         channel: "",
         level_name: "",
@@ -2227,7 +2234,9 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
       axios.post("/logger-ui/logs", this.filter).then(function (response) {
         _this2.pagination = response.data.pagination;
-        _this2.lines = collect_js__WEBPACK_IMPORTED_MODULE_0___default()(_this2.lines).when(_this2.filter.app_name !== "", function (lines) {
+        _this2.lines = collect_js__WEBPACK_IMPORTED_MODULE_0___default()(_this2.lines).when(_this2.filter.date !== "", function (lines) {
+          return lines.where("logged_at", "<=", _this2.filter.date);
+        }).when(_this2.filter.app_name !== "", function (lines) {
           return lines.where("app_name", _this2.filter.app_name);
         }).when(_this2.filter.channel !== "", function (lines) {
           return lines.where("channel", _this2.filter.channel);
@@ -2317,6 +2326,29 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -30955,73 +30987,93 @@ var render = function () {
                                 _vm._v("Context"),
                               ]),
                               _vm._v(" "),
-                              _c(
-                                "ul",
-                                { staticClass: "ml-2 m-h-64 overflow-y-auto" },
-                                _vm._l(line.context, function (value, key) {
-                                  return _c(
-                                    "li",
-                                    { key: key, staticClass: "mb-1" },
-                                    [
-                                      _c("span", { staticClass: "font-bold" }, [
-                                        _vm._v(_vm._s(key) + ":"),
-                                      ]),
-                                      _vm._v(" "),
-                                      key !== "exception"
-                                        ? _c("div", {
-                                            staticClass: "whitespace-normal",
-                                            domProps: {
-                                              innerHTML: _vm._s(value),
-                                            },
-                                          })
-                                        : [
-                                            _c(
-                                              "ul",
-                                              { staticClass: "ml-4" },
-                                              _vm._l(
-                                                value,
-                                                function (subValue, subKey) {
-                                                  return _c(
-                                                    "li",
-                                                    {
-                                                      key: subKey,
-                                                      staticClass: "mb-1",
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "span",
+                              typeof line.context === "string"
+                                ? _c("p", [
+                                    _vm._v(
+                                      "\n                " +
+                                        _vm._s(line.context) +
+                                        "\n              "
+                                    ),
+                                  ])
+                                : _c(
+                                    "ul",
+                                    {
+                                      staticClass:
+                                        "ml-2 m-h-64 overflow-y-auto",
+                                    },
+                                    _vm._l(line.context, function (value, key) {
+                                      return _c(
+                                        "li",
+                                        { key: key, staticClass: "mb-1" },
+                                        [
+                                          _c(
+                                            "span",
+                                            { staticClass: "font-bold" },
+                                            [_vm._v(_vm._s(key) + ":")]
+                                          ),
+                                          _vm._v(" "),
+                                          key !== "exception"
+                                            ? _c("div", {
+                                                staticClass:
+                                                  "whitespace-normal",
+                                                domProps: {
+                                                  innerHTML: _vm._s(value),
+                                                },
+                                              })
+                                            : [
+                                                _c(
+                                                  "ul",
+                                                  { staticClass: "ml-4" },
+                                                  _vm._l(
+                                                    value,
+                                                    function (
+                                                      subValue,
+                                                      subKey
+                                                    ) {
+                                                      return _c(
+                                                        "li",
                                                         {
-                                                          staticClass:
-                                                            "font-bold",
+                                                          key: subKey,
+                                                          staticClass: "mb-1",
                                                         },
                                                         [
-                                                          _vm._v(
-                                                            _vm._s(subKey) + ":"
+                                                          _c(
+                                                            "span",
+                                                            {
+                                                              staticClass:
+                                                                "font-bold",
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                _vm._s(subKey) +
+                                                                  ":"
+                                                              ),
+                                                            ]
                                                           ),
+                                                          _vm._v(" "),
+                                                          _c("div", {
+                                                            staticClass:
+                                                              "whitespace-normal",
+                                                            domProps: {
+                                                              innerHTML:
+                                                                _vm._s(
+                                                                  subValue
+                                                                ),
+                                                            },
+                                                          }),
                                                         ]
-                                                      ),
-                                                      _vm._v(" "),
-                                                      _c("div", {
-                                                        staticClass:
-                                                          "whitespace-normal",
-                                                        domProps: {
-                                                          innerHTML:
-                                                            _vm._s(subValue),
-                                                        },
-                                                      }),
-                                                    ]
-                                                  )
-                                                }
-                                              ),
-                                              0
-                                            ),
-                                          ],
-                                    ],
-                                    2
-                                  )
-                                }),
-                                0
-                              ),
+                                                      )
+                                                    }
+                                                  ),
+                                                  0
+                                                ),
+                                              ],
+                                        ],
+                                        2
+                                      )
+                                    }),
+                                    0
+                                  ),
                               _vm._v(" "),
                               _c("hr", { staticClass: "border-gray-700" }),
                             ])
@@ -31033,22 +31085,34 @@ var render = function () {
                                 _vm._v("Extra"),
                               ]),
                               _vm._v(" "),
-                              _c(
-                                "ul",
-                                _vm._l(line.extra, function (value, key) {
-                                  return _c("li", { key: key }, [
-                                    _c("span", { staticClass: "font-bold" }, [
-                                      _vm._v(_vm._s(key) + ":"),
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("div", {
-                                      staticClass: "whitespace-normal",
-                                      domProps: { innerHTML: _vm._s(value) },
-                                    }),
+                              typeof line.extra === "string"
+                                ? _c("p", [
+                                    _vm._v(
+                                      "\n                " +
+                                        _vm._s(line.extra) +
+                                        "\n              "
+                                    ),
                                   ])
-                                }),
-                                0
-                              ),
+                                : _c(
+                                    "ul",
+                                    _vm._l(line.extra, function (value, key) {
+                                      return _c("li", { key: key }, [
+                                        _c(
+                                          "span",
+                                          { staticClass: "font-bold" },
+                                          [_vm._v(_vm._s(key) + ":")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c("div", {
+                                          staticClass: "whitespace-normal",
+                                          domProps: {
+                                            innerHTML: _vm._s(value),
+                                          },
+                                        }),
+                                      ])
+                                    }),
+                                    0
+                                  ),
                               _vm._v(" "),
                               _c("hr", { staticClass: "border-gray-700" }),
                             ])
@@ -31131,6 +31195,42 @@ var render = function () {
     },
     [
       _c("div", { staticClass: "container mx-auto flex items-center" }, [
+        _c("div", { staticClass: "flex rounded-md shadow-sm" }, [
+          _c(
+            "span",
+            {
+              staticClass:
+                "\n          inline-flex\n          items-center\n          px-3\n          rounded-l-md\n          border border-r-0 border-gray-900\n          bg-gray-900\n          text-gray-500\n          sm:text-sm\n        ",
+            },
+            [_vm._v("\n        Date\n      ")]
+          ),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.value.date,
+                expression: "value.date",
+              },
+            ],
+            staticClass: "bg-gray-800 flex-1 w-40 mr-2 rounded-r-md",
+            attrs: {
+              type: "date",
+              max: new Date().toISOString().split("T")[0],
+            },
+            domProps: { value: _vm.value.date },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.value, "date", $event.target.value)
+              },
+            },
+          }),
+        ]),
+        _vm._v(" "),
         _c("div", { staticClass: "flex rounded-md shadow-sm" }, [
           _c(
             "span",

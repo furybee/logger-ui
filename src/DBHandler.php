@@ -4,6 +4,10 @@ namespace FuryBee\LoggerUi;
 
 use DateTimeImmutable;
 use Exception;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Illuminate\Support\Facades\DB;
@@ -35,12 +39,13 @@ class DBHandler extends AbstractProcessingHandler
      */
     protected function write(array $record): void
     {
+
         $data = array(
             'app_name'      => config('logger-ui.app.name'),
             'channel'       => $record['channel'],
             'level_name'    => $record['level_name'],
             'level'         => $record['level'],
-            'message'       => $record['message'],
+            'message'       => $this->formatMessage($record['message']),
             'context'       => $this->formatContext($record['context']),
             'extra'         => json_encode($record['extra']),
             'user_id'       => auth()->id(),
@@ -54,6 +59,24 @@ class DBHandler extends AbstractProcessingHandler
 
             DB::connection($this->connection)->table($this->table)->insert($data);
         }, 20);
+    }
+
+    /**
+     *
+     * @param array $message
+     * @return string
+     */
+    protected function formatMessage($message): string
+    {
+        if ($message instanceof Collection || $message instanceof EloquentCollection || $message instanceof Arrayable) {
+            $message = $message->toArray();
+        }
+
+        if (is_array($message) === true) {
+            $message = json_encode($message);
+        }
+
+        return $message;
     }
 
     /**
