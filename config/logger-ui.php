@@ -30,6 +30,7 @@ return [
     ],
 
     'queue' => [
+        'active' => false,
         'name' => env('DB_LOGGER_UI_QUEUE_NAME', 'default'),
     ],
 ];

@@ -43,10 +43,14 @@ class DBHandler extends AbstractProcessingHandler
 
         $job = new DBLoggerJob($config['db'], $data);
 
-        if (isset($config['queue']['name']) === true) {
-            $job->onQueue($config['queue']['name']);
+        if (isset($config['queue']['active']) === true && $config['queue']['active'] === true) {
+            if (isset($config['queue']['name']) === true) {
+                $job->onQueue($config['queue']['name']);
+            }
+
+            dispatch($job);
         }
 
-        dispatch($job);
+        $job->handle();
     }
 }
