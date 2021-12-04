@@ -13,9 +13,10 @@
         text-2xl
         flex
         items-center
+        px-10
       "
     >
-      <div class="container mx-auto flex items-center justify-between">
+      <div class="flex w-full items-center justify-between">
         <h1>Logger UI</h1>
 
         <div class="text-sm flex items-center">
@@ -212,6 +213,7 @@ export default {
       ],
       available_filters: {
         app_names: [],
+        environnements: [],
         channels: [],
         level_names: [],
       },
@@ -220,6 +222,7 @@ export default {
       filter: {
         date: "",
         app_name: "",
+        environnement: "",
         channel: "",
         level_name: "",
         query: "",
@@ -299,6 +302,9 @@ export default {
             })
             .when(this.filter.app_name !== "", (lines) => {
               return lines.where("app_name", this.filter.app_name);
+            })
+            .when(this.filter.environnement !== "", (lines) => {
+              return lines.where("environnement", this.filter.environnement);
             })
             .when(this.filter.channel !== "", (lines) => {
               return lines.where("channel", this.filter.channel);

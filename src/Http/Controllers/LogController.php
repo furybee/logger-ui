@@ -3,11 +3,10 @@
 namespace FuryBee\LoggerUi\Http\Controllers;
 
 use Carbon\Carbon;
-use FuryBee\LoggerUi\Http\Requests\LogIndexRequest;
+use FuryBee\LoggerUi\Http\Repositories\LogRepository;
 use FuryBee\LoggerUi\Http\Resources\LogResource;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class LogController
@@ -15,6 +14,7 @@ class LogController
     const ALLOWED_FILTERS = [
         'date',
         'app_name',
+        'environnement',
         'channel',
         'level_name',
         'query',
@@ -24,6 +24,7 @@ class LogController
     const DEFAULT_FILTERS = [
         'date' => '',
         'app_name' => '',
+        'environnement' => '',
         'channel' => '',
         'level_name' => '',
         'query' => '',
@@ -32,22 +33,15 @@ class LogController
 
     protected $connection;
     protected $table;
-
-    public function __construct()
-    {
-        $dbConfig = config('logger-ui.db');
-
-        $this->connection = $dbConfig['connection'];
-        $this->table = $dbConfig['table'];
-    }
+    protected $logRepository;
 
     /**
      *
-     * @return Builder
+     * @param LogRepository $logRepository
      */
-    private function getBuilder(): Builder
+    public function __construct(LogRepository $logRepository)
     {
-        return DB::connection($this->connection)->table($this->table);
+        $this->logRepository = $logRepository;
     }
 
     /**
@@ -60,6 +54,7 @@ class LogController
         $validator = Validator::make($request->all(), [
             'date' => 'nullable|date',
             'app_name' => 'nullable|string',
+            'environnement' => 'nullable|string',
             'channel' => 'nullable|string',
             'level_name' => 'nullable|string',
             'query' => 'nullable|string',
@@ -78,32 +73,7 @@ class LogController
             ->filter()
             ->toArray();
 
-        $apps = $this
-            ->getBuilder()
-            ->selectRaw('DISTINCT(app_name) as apps')
-            ->pluck('apps')
-            ->sort()
-            ->values()
-            ->toArray();
-
-        $channels = $this
-            ->getBuilder()
-            ->selectRaw('DISTINCT(channel) as channels')
-            ->pluck('channels')
-            ->sort()
-            ->values()
-            ->toArray();
-
-        $levelNames = $this
-            ->getBuilder()
-            ->selectRaw('DISTINCT(level_name) as level_names')
-            ->pluck('level_names')
-            ->sort()
-            ->values()
-            ->toArray();
-
-        $paginator = $this
-            ->getBuilder()
+        $paginator = $this->logRepository->getBuilder()
             ->when(isset($filters['date']) === true, function (Builder $builder) use ($filters) {
                 $date = Carbon::createFromFormat('Y-m-d', $filters['date'])->endOfDay();
 
@@ -111,6 +81,9 @@ class LogController
             })
             ->when(isset($filters['app_name']) === true, function (Builder $builder) use ($filters) {
                 $builder->where('app_name', $filters['app_name']);
+            })
+            ->when(isset($filters['environnement']) === true, function (Builder $builder) use ($filters) {
+                $builder->where('environnement', $filters['environnement']);
             })
             ->when(isset($filters['channel']) === true, function (Builder $builder) use ($filters) {
                 $builder->where('channel', $filters['channel']);
@@ -128,9 +101,8 @@ class LogController
             })
             ->orderByDesc('logged_at')
             ->simplePaginate(self::DEFAULT_FILTERS['per_page'])
-            ->setPageName('page');
-
-        $paginator = $paginator->toArray();
+            ->setPageName('page')
+            ->toArray();
 
         $data = $paginator['data'];
 
@@ -140,9 +112,10 @@ class LogController
             'pagination' => $paginator,
             'lines' => LogResource::collection($data),
             'available_filters' => [
-                'app_names' => $apps,
-                'channels' => $channels,
-                'level_names' => $levelNames
+                'app_names' => $this->logRepository->getAppList(),
+                'environnements' => $this->logRepository->getEnvList(),
+                'channels' => $this->logRepository->getChannelList(),
+                'level_names' => $this->logRepository->getLevelNameList()
             ],
         ];
     }
