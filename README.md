@@ -1,6 +1,7 @@
 # Logger UI
 
-![home](https://user-images.githubusercontent.com/45472257/143687576-d6e7af7b-a27d-4454-a01f-b833c2781829.png)
+![logger-ui-main](https://user-images.githubusercontent.com/45472257/144709342-cfd94388-0fb5-4297-b52f-eb6ba448e8af.png)
+
 
 ## Installing The Logger UI Dashboard
 
@@ -89,7 +90,7 @@ If you have not published Logger UI's configuration file, you may do so using th
 php artisan vendor:publish --tag=logger-ui-config
 ```
 
-Once the configuration file has been published, you may edit Logger UI's middleware or database by tweaking the middleware configuration option within this file.
+Once the configuration file has been published, you may edit Logger UI's middleware, queue name or database by tweaking the configuration options within this file.
 
 ### Database
 
@@ -99,6 +100,17 @@ If needed, you may update DB Connection and the Table where logger-ui will store
 'db' => [
     'connection' => env('DB_CONNECTION', null),
     'table' => env('DB_LOGGER_UI_TABLE', 'logger_ui_entries')
+],
+```
+
+### Queue
+
+If you are using a Queue Driver different of `sync`, you may update the Queue Configuraion. The Log Data will be sent by a Job. Otherwise, it will be sent in the request lifecycle.
+
+```php
+'queue' => [
+    'active' => false,
+    'name' => env('DB_LOGGER_UI_QUEUE_NAME', 'default'),
 ],
 ```
 
