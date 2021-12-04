@@ -2,6 +2,7 @@
 
 namespace FuryBee\LoggerUi\Console;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -33,11 +34,15 @@ class MigrateCommand extends Command
      */
     public function handle()
     {
-        $this->config = config('logger-ui.db');
+        try {
+            $this->config = config('logger-ui.db');
 
-        $isSingleStore = $this->option('singlestore') === 'on' ? true : false;
+            $this->option('singlestore') === 'on' ? $this->handleSingleStore() : $this->handleNormal();
+        } catch (Exception $exception) {
+            $this->warn($exception->getMessage());
 
-        $isSingleStore === true ? $this->handleSingleStore() : $this->handleNormal();
+            return;
+        }
 
         $this->info('Migration has been executed successfully!');
     }
@@ -46,6 +51,7 @@ class MigrateCommand extends Command
     {
         $statement = file_get_contents(dirname(__FILE__) . '/sql/2021_11_11_000001_create_logger_ui_table_singlestore.sql');
         $statement = str_replace(':logger_ui_table_name:', $this->config['table'], $statement);
+
 
         DB::connection($this->config['connection'])->statement($statement);
     }
@@ -58,6 +64,7 @@ class MigrateCommand extends Command
             $table->bigIncrements('id');
 
             $table->string('app_name')->index();
+            $table->string('environnement')->index();
             $table->string('channel')->index();
             $table->string('level_name')->index();
             $table->string('level')->index();

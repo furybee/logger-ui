@@ -29,4 +29,7 @@ return [
         'table' => env('DB_LOGGER_UI_TABLE', 'logger_ui_entries'),
     ],
 
+    'queue' => [
+        'name' => env('DB_LOGGER_UI_TABLE', 'logger_ui_entries'),
+    ],
 ];

@@ -12,10 +12,10 @@
       text-sm
       flex
       items-center
-      p-2
+      px-10
     "
   >
-    <div class="container mx-auto flex items-center">
+    <div class="flex w-full items-center">
       <div class="flex rounded-md shadow-sm">
         <span
           class="
@@ -64,6 +64,35 @@
             :key="index"
           >
             {{ app }}
+          </option>
+        </select>
+      </div>
+
+      <div class="flex rounded-md shadow-sm">
+        <span
+          class="
+            inline-flex
+            items-center
+            px-3
+            rounded-l-md
+            border border-r-0 border-gray-900
+            bg-gray-900
+            text-gray-500
+            sm:text-sm
+          "
+        >
+          Env
+        </span>
+        <select
+          class="bg-gray-800 w-40 mr-2 rounded-r-md"
+          v-model="value.environnement"
+        >
+          <option value="">ALL</option>
+          <option
+            v-for="(environnement, index) in available_filters.environnements"
+            :key="index"
+          >
+            {{ environnement }}
           </option>
         </select>
       </div>

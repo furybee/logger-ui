@@ -1,6 +1,7 @@
-CREATE REFERENCE TABLE IF NOT EXISTS :logger_ui_table_name: (
+CREATE TABLE IF NOT EXISTS :logger_ui_table_name: (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `app_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `environnement` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `channel` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `level_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `level` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -11,6 +12,7 @@ CREATE REFERENCE TABLE IF NOT EXISTS :logger_ui_table_name: (
   `logged_at` datetime(6) NOT NULL,
   `created_at` datetime(6) NOT NULL,
   PRIMARY KEY `id` (`id`),
+  SHARD KEY (`id`),
   KEY `logged_at` (`logged_at`) USING CLUSTERED COLUMNSTORE,
   KEY `logger_ui_entries_app_name_index` (`app_name`) USING HASH,
   KEY `logger_ui_entries_channel_index` (`channel`) USING HASH,
