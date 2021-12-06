@@ -49,6 +49,8 @@ class DBHandler extends AbstractProcessingHandler
             }
 
             dispatch($job);
+            
+            return;
         }
 
         $job->handle();
