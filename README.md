@@ -11,11 +11,13 @@ This package provides a beautiful dashboard through your application that allows
 composer require furybee/logger-ui
 ```
 
-After installing Logger UI, you may publish its assets using the `logger-ui:install` Artisan command. You should also run the `migrate` command in order to create the table needed to store Logger UI's data:
+After installing Logger UI, you may publish its assets using the `logger-ui:install` Artisan command. 
 
 ```sh
 php artisan logger-ui:install
 ```
+
+You should also run the `migrate` command in order to create the table needed to store Logger UI's data:
 
 Note : if you are using SingleStore, add `--singlestore=on` option.
 
