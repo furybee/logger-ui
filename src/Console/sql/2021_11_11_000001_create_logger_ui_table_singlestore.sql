@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS :logger_ui_table_name: (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `app_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `environnement` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `environment` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `channel` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `level_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `level` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
