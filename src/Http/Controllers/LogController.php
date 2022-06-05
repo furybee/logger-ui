@@ -14,7 +14,7 @@ class LogController
     const ALLOWED_FILTERS = [
         'date',
         'app_name',
-        'environnement',
+        'environment',
         'channel',
         'level_name',
         'query',
@@ -24,7 +24,7 @@ class LogController
     const DEFAULT_FILTERS = [
         'date' => '',
         'app_name' => '',
-        'environnement' => '',
+        'environment' => '',
         'channel' => '',
         'level_name' => '',
         'query' => '',
@@ -47,14 +47,15 @@ class LogController
     /**
      *
      * @param Request $request
-     * @return void
+     *
+     * @return array
      */
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'date' => 'nullable|date',
             'app_name' => 'nullable|string',
-            'environnement' => 'nullable|string',
+            'environment' => 'nullable|string',
             'channel' => 'nullable|string',
             'level_name' => 'nullable|string',
             'query' => 'nullable|string',
@@ -69,10 +70,6 @@ class LogController
             ->filter()
             ->toArray();
 
-        $filters = collect($request->only(self::ALLOWED_FILTERS))
-            ->filter()
-            ->toArray();
-
         $paginator = $this->logRepository->getBuilder()
             ->when(isset($filters['date']) === true, function (Builder $builder) use ($filters) {
                 $date = Carbon::createFromFormat('Y-m-d', $filters['date'])->endOfDay();
@@ -82,8 +79,8 @@ class LogController
             ->when(isset($filters['app_name']) === true, function (Builder $builder) use ($filters) {
                 $builder->where('app_name', $filters['app_name']);
             })
-            ->when(isset($filters['environnement']) === true, function (Builder $builder) use ($filters) {
-                $builder->where('environnement', $filters['environnement']);
+            ->when(isset($filters['environment']) === true, function (Builder $builder) use ($filters) {
+                $builder->where('environment', $filters['environment']);
             })
             ->when(isset($filters['channel']) === true, function (Builder $builder) use ($filters) {
                 $builder->where('channel', $filters['channel']);
@@ -97,6 +94,7 @@ class LogController
                 $builder->where(function (Builder $builder) use ($query) {
                     $builder->where('message', 'LIKE', "%{$query}%");
                     $builder->orWhere('context', 'LIKE', "%{$query}%");
+                    $builder->orWhere('extra', 'LIKE', "%{$query}%");
                 });
             })
             ->orderByDesc('logged_at')
@@ -113,7 +111,7 @@ class LogController
             'lines' => LogResource::collection($data),
             'available_filters' => [
                 'app_names' => $this->logRepository->getAppList(),
-                'environnements' => $this->logRepository->getEnvList(),
+                'environments' => $this->logRepository->getEnvList(),
                 'channels' => $this->logRepository->getChannelList(),
                 'level_names' => $this->logRepository->getLevelNameList()
             ],

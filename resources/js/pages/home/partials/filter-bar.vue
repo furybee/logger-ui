@@ -85,14 +85,14 @@
         </span>
         <select
           class="bg-gray-800 w-40 mr-2 rounded-r-md"
-          v-model="value.environnement"
+          v-model="value.environment"
         >
           <option value="">ALL</option>
           <option
-            v-for="(environnement, index) in available_filters.environnements"
+            v-for="(environment, index) in available_filters.environments"
             :key="index"
           >
-            {{ environnement }}
+            {{ environment }}
           </option>
         </select>
       </div>

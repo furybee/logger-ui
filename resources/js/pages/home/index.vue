@@ -213,7 +213,7 @@ export default {
       ],
       available_filters: {
         app_names: [],
-        environnements: [],
+        environments: [],
         channels: [],
         level_names: [],
       },
@@ -222,7 +222,7 @@ export default {
       filter: {
         date: "",
         app_name: "",
-        environnement: "",
+        environment: "",
         channel: "",
         level_name: "",
         query: "",
@@ -303,8 +303,8 @@ export default {
             .when(this.filter.app_name !== "", (lines) => {
               return lines.where("app_name", this.filter.app_name);
             })
-            .when(this.filter.environnement !== "", (lines) => {
-              return lines.where("environnement", this.filter.environnement);
+            .when(this.filter.environment !== "", (lines) => {
+              return lines.where("environment", this.filter.environment);
             })
             .when(this.filter.channel !== "", (lines) => {
               return lines.where("channel", this.filter.channel);
