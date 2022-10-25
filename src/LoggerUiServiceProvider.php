@@ -18,12 +18,6 @@ class LoggerUiServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if ($this->ensureEnvExists() === false) {
-            throw new MissingLoggerUiEnvException('Please ensure env is correctly defined.');
-
-            return;
-        }
-
         Route::middlewareGroup('logger-ui', config('logger-ui.middleware', []));
 
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
@@ -68,17 +62,17 @@ class LoggerUiServiceProvider extends ServiceProvider
     /**
      * @throws Throwable
      */
-    private function ensureEnvExists()
+    private function ensureEnvExists(): bool
     {
         if ($this->app->runningInConsole()) {
-            return;
+            return false;
         }
 
         $dbConfig = config('logger-ui.db');
 
-        return isset($dbConfig)
-            && isset($dbConfig['connection'])
-            && isset($dbConfig['table']);
+        return isset($dbConfig) === true
+            && isset($dbConfig['connection']) === true
+            && isset($dbConfig['table']) === true;
     }
 
     /**

@@ -64,7 +64,7 @@ class MigrateCommand extends Command
             $table->bigIncrements('id');
 
             $table->string('app_name')->index();
-            $table->string('environnement')->index();
+            $table->string('environment')->index();
             $table->string('channel')->index();
             $table->string('level_name')->index();
             $table->string('level')->index();

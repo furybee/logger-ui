@@ -40,8 +40,8 @@ class LogRepository
     {
         return $this
             ->getBuilder()
-            ->selectRaw('DISTINCT(environnement) as environnements')
-            ->pluck('environnements')
+            ->selectRaw('DISTINCT(environment) as environments')
+            ->pluck('environments')
             ->sort()
             ->values()
             ->toArray();

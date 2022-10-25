@@ -19,10 +19,10 @@ php artisan logger-ui:install
 
 You should also run the `migrate` command in order to create the table needed to store Logger UI's data:
 
-Note : if you are using SingleStore, add `--singlestore=on` option.
+Note : if you are using SingleStore Database, modify `--singlestore` option.
 
 ```sh
-php artisan logger-ui:migrate
+php artisan logger-ui:migrate --singlestore=off
 ```
 
 ## Setup Logger UI as default channel
@@ -32,8 +32,8 @@ In your `config/logging.php` file, add the following channel:
 ```php
 'logger-ui' => [
     'driver' => 'custom',
-    'path' => DBHandler::class,
-    'via' => DBLogger::class,
+    'path' => \FuryBee\LoggerUi\DBHandler::class,
+    'via' => \FuryBee\LoggerUi\DBLogger::class,
     'level' => 'debug',
 ],
 ```
@@ -46,7 +46,9 @@ LOG_CHANNEL=logger-ui
 
 ## Dashboard Authorization
 
-Logger UI exposes a dashboard at the `/logger-ui` URI. Within your `app/Providers/LoggerUiServiceProvider.php` file, there is a gate method that controls access to the Logger UI dashboard. By default, all visitors are restricted. You should modify this gate as needed to grant access to your Logger UI dashboard:
+Logger UI exposes a dashboard at the `/logger-ui` URI. Within your `app/Providers/LoggerUiServiceProvider.php` file, there is a gate method that controls access to the Logger UI dashboard. 
+
+By default, all guests are restricted. You should modify this gate as needed to grant access to your Logger UI dashboard:
 
 ```php
 /**
@@ -107,7 +109,9 @@ If needed, you may update DB Connection and the Table where logger-ui will store
 
 ### Queue
 
-If you are using a Queue Driver different of `sync`, you may update the Queue Configuraion. The Log Data will be sent by a Job. Otherwise, it will be sent in the request lifecycle.
+If you are using a Queue Driver different of `sync`, you may update the Queue Configuration. Indeed, with sync driver, the log data will be sent in the request lifecycle, and it will slow down the server response time.
+
+The log data may be sent by a Job.
 
 ```php
 'queue' => [

@@ -1,11 +1,7 @@
 <template>
-  <div class="h-screen flex flex-col px-2">
+  <div class="h-full flex flex-col">
     <div
-      class="
-        fixed
-        top-0
-        right-0
-        left-0
+        class="
         h-16
         bg-grey-950
         text-gray-100
@@ -23,38 +19,38 @@
           <button class="mr-3" @click.prevent="loadOldest">Load Oldest</button>
 
           <button
-            class="border-green-400 border-2 rounded-full focus:outline-none"
-            v-show="is_live === true"
-            @click.prevent="pause"
+              class="border-green-400 border-2 rounded-full focus:outline-none"
+              v-show="is_live === true"
+              @click.prevent="pause"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-10 w-10"
+                viewBox="0 0 20 20"
+                fill="currentColor"
             >
               <path
-                fill-rule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
-                clip-rule="evenodd"
+                  fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clip-rule="evenodd"
               />
             </svg>
           </button>
           <button
-            class="border-yellow-400 border-2 rounded-full focus:outline-none"
-            v-show="is_live === false"
-            @click.prevent="play"
+              class="border-yellow-400 border-2 rounded-full focus:outline-none"
+              v-show="is_live === false"
+              @click.prevent="play"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-10 w-10"
+                viewBox="0 0 20 20"
+                fill="currentColor"
             >
               <path
-                fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                clip-rule="evenodd"
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                  clip-rule="evenodd"
               />
             </svg>
           </button>
@@ -62,11 +58,11 @@
       </div>
     </div>
 
-    <div class="flex flex-1 items-end py-20">
+    <div ref="logLines" class="flex flex-1 px-2 overflow-y-auto">
       <ul class="flex flex-col w-full">
         <li class="flex mb-1 group" v-for="line in lines" :key="line.id">
           <span
-            class="
+              class="
               inline-flex
               items-center
               justify-center
@@ -80,13 +76,13 @@
               h-6
               cursor-pointer
             "
-            :class="badgeClass(line.level)"
-            @click="filter.level_name = line.level_name"
+              :class="badgeClass(line.level)"
+              @click="filter.level_name = line.level_name"
           >
             {{ line.level_name }}</span
           >
           <span
-            class="
+              class="
               inline-flex
               items-center
               justify-center
@@ -113,34 +109,34 @@
                 </p>
                 <ul v-else class="ml-2 m-h-64 overflow-y-auto">
                   <li
-                    class="mb-1"
-                    v-for="(value, key) of line.context"
-                    :key="key"
+                      class="mb-1"
+                      v-for="(value, key) of line.context"
+                      :key="key"
                   >
                     <span class="font-bold">{{ key }}:</span>
                     <div
-                      class="whitespace-normal"
-                      v-if="key !== 'exception'"
-                      v-html="value"
+                        class="whitespace-normal"
+                        v-if="key !== 'exception'"
+                        v-html="value"
                     ></div>
                     <template v-else>
                       <ul class="ml-4">
                         <li
-                          class="mb-1"
-                          v-for="(subValue, subKey) of value"
-                          :key="subKey"
+                            class="mb-1"
+                            v-for="(subValue, subKey) of value"
+                            :key="subKey"
                         >
                           <span class="font-bold">{{ subKey }}:</span>
                           <div
-                            class="whitespace-normal"
-                            v-html="subValue"
+                              class="whitespace-normal"
+                              v-html="subValue"
                           ></div>
                         </li>
                       </ul>
                     </template>
                   </li>
                 </ul>
-                <hr class="border-gray-700" />
+                <hr class="border-gray-700"/>
               </div>
 
               <div v-if="line.extra.length !== 0">
@@ -154,14 +150,14 @@
                     <div class="whitespace-normal" v-html="value"></div>
                   </li>
                 </ul>
-                <hr class="border-gray-700" />
+                <hr class="border-gray-700"/>
               </div>
             </div>
           </div>
           <a
-            v-if="line.context.length !== 0 || line.extra.length !== 0"
-            href="#"
-            class="
+              v-if="line.context.length !== 0 || line.extra.length !== 0"
+              href="#"
+              class="
               ml-1
               inline-flex
               items-center
@@ -173,7 +169,7 @@
               w-6
               font-bold
             "
-            @click.prevent="toggleDetails(line)"
+              @click.prevent="toggleDetails(line)"
           >
             <span v-if="line.has_details_displayed === false">+</span>
             <span v-else>-</span>
@@ -183,9 +179,9 @@
     </div>
 
     <filter-bar
-      v-if="available_filters !== undefined"
-      :available_filters="available_filters"
-      v-model="filter"
+        v-if="available_filters !== undefined"
+        :available_filters="available_filters"
+        v-model="filter"
     ></filter-bar>
   </div>
 </template>
@@ -194,10 +190,11 @@
 import collect from "collect.js";
 import Clipboard from "../../mixins/clipboard";
 import filterBar from "./partials/filter-bar.vue";
+
 const axios = require("axios");
 
 export default {
-  components: { filterBar },
+  components: {filterBar},
   mixins: [Clipboard],
   data() {
     return {
@@ -213,7 +210,7 @@ export default {
       ],
       available_filters: {
         app_names: [],
-        environnements: [],
+        environments: [],
         channels: [],
         level_names: [],
       },
@@ -222,7 +219,7 @@ export default {
       filter: {
         date: "",
         app_name: "",
-        environnement: "",
+        environment: "",
         channel: "",
         level_name: "",
         query: "",
@@ -292,48 +289,49 @@ export default {
       }
 
       axios
-        .post("/logger-ui/logs", this.filter)
-        .then((response) => {
-          this.pagination = response.data.pagination;
+          .post("/logger-ui/logs", this.filter)
+          .then((response) => {
+            this.pagination = response.data.pagination;
 
-          this.lines = collect(this.lines)
-            .when(this.filter.date !== "", (lines) => {
-              return lines.where("logged_at", "<=", this.filter.date);
-            })
-            .when(this.filter.app_name !== "", (lines) => {
-              return lines.where("app_name", this.filter.app_name);
-            })
-            .when(this.filter.environnement !== "", (lines) => {
-              return lines.where("environnement", this.filter.environnement);
-            })
-            .when(this.filter.channel !== "", (lines) => {
-              return lines.where("channel", this.filter.channel);
-            })
-            .when(this.filter.level_name !== "", (lines) => {
-              return lines.where("level_name", this.filter.level_name);
-            })
-            .when(this.filter.query !== "", (lines) => {
-              return lines.filter((line) => {
-                return (
-                  line.message.includes(this.filter.query) ||
-                  JSON.stringify(line.context).includes(this.filter.query)
-                );
-              });
-            })
-            .merge(response.data.lines)
-            .unique("id")
-            .sortBy("logged_at")
-            .all();
+            this.lines = collect(this.lines)
+                .when(this.filter.date !== "", (lines) => {
+                  return lines.where("logged_at", "<=", this.filter.date);
+                })
+                .when(this.filter.app_name !== "", (lines) => {
+                  return lines.where("app_name", this.filter.app_name);
+                })
+                .when(this.filter.environment !== "", (lines) => {
+                  return lines.where("environment", this.filter.environment);
+                })
+                .when(this.filter.channel !== "", (lines) => {
+                  return lines.where("channel", this.filter.channel);
+                })
+                .when(this.filter.level_name !== "", (lines) => {
+                  return lines.where("level_name", this.filter.level_name);
+                })
+                .when(this.filter.query !== "", (lines) => {
+                  return lines.filter((line) => {
+                    return (
+                        line.message.includes(this.filter.query) ||
+                        JSON.stringify(line.context).includes(this.filter.query)
+                    );
+                  });
+                })
+                .merge(response.data.lines)
+                .unique("id")
+                .sortBy("logged_at")
+                .all();
 
-          this.available_filters = response.data.available_filters;
+            this.available_filters = response.data.available_filters;
 
-          setTimeout(() => {
-            window.scrollTo(0, document.body.scrollHeight);
-          }, 400);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+            setTimeout(() => {
+              this.$refs.logLines.scrollTo(0, document.body.scrollHeight);
+              // window.scrollTo(0, document.body.scrollHeight);
+            }, 400);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
     },
     toggleDetails(line) {
       line.has_details_displayed = !line.has_details_displayed;
@@ -358,9 +356,9 @@ export default {
     "filter.page": {
       handler: function (newValue) {
         this.loadedPages = collect(this.loadedPages)
-          .push(newValue)
-          .unique()
-          .all();
+            .push(newValue)
+            .unique()
+            .all();
       },
     },
     filter: {

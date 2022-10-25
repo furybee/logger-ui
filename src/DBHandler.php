@@ -29,14 +29,14 @@ class DBHandler extends AbstractProcessingHandler
 
         $data = array(
             'app_name'      => $config['app']['name'],
-            'environnement' => config('app.env'),
+            'environment'   => config('app.env'),
             'channel'       => $record['channel'],
             'level_name'    => $record['level_name'],
             'level'         => $record['level'],
             'message'       => $record['message'],
             'context'       => $record['context'],
             'extra'         => json_encode($record['extra']),
-            'user_id'       => auth()->id(),
+            'user_id'       => optional(auth())->id(),
             'logged_at'     => $record['datetime']->format('Y-m-d H:i:s.u'),
             'created_at'    => null,
         );
@@ -49,7 +49,7 @@ class DBHandler extends AbstractProcessingHandler
             }
 
             dispatch($job);
-            
+
             return;
         }
 
