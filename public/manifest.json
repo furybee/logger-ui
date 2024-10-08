@@ -1,11 +1,11 @@
 {
   "resources/css/logger-ui.css": {
-    "file": "assets/logger-ui-DNov1T6l.css",
+    "file": "assets/css/logger-ui.css",
     "src": "resources/css/logger-ui.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-CPtY3T5l.js",
+    "file": "assets/js/app.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true

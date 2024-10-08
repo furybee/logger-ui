@@ -189,23 +189,22 @@
             </ul>
         </div>
 
-        <filter-bar
+        <FilterBar
             v-if="available_filters !== undefined"
-            :available_filters="available_filters"
-            v-model="filter"
-        ></filter-bar>
+            :available-filters="available_filters"
+            v-model="filter">
+        </FilterBar>
     </div>
 </template>
 
 <script>
 import collect from "collect.js";
 import Clipboard from "../../mixins/clipboard";
-import filterBar from "./partials/filter-bar.vue";
-
-const axios = require("axios");
+import FilterBar from "./partials/FilterBar.vue";
+import axios from "axios";
 
 export default {
-    components: {filterBar},
+    components: {FilterBar},
     mixins: [Clipboard],
     data() {
         return {

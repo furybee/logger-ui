@@ -12,9 +12,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
 
-   {{ Vite::useBuildDirectory('vendor/logger-ui')->withEntryPoints([
-        'resources/js/app.js',
-]) }}
+    {{
+     Illuminate\Support\Facades\Vite::useHotFile(storage_path('vite.hot'))
+         ->useBuildDirectory('vendor/logger-ui')
+         ->withEntryPoints(['resources/js/app.js', 'resources/css/logger-ui.css'])
+    }}
     <link rel="icon" type="image/png" href="{{ asset('vendor/logger-ui/favicon.png') }}"/>
 </head>
 <body class="bg-gray-900 h-full">
