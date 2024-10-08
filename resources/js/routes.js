@@ -4,7 +4,7 @@ export default [
     {
         path: '/home',
         name: 'home-index',
-        component: require('./pages/home/index').default,
+        component: require('./pages/home/index.vue').default,
         meta: {
             resource: 'home',
             createTitle: () => 'Home',

@@ -19,13 +19,14 @@ class DBHandler extends AbstractProcessingHandler
     }
 
     /**
-     *
-     * @param array $record
+     * @param \Monolog\LogRecord $record
      * @return void
      */
-    protected function write(array $record): void
+    protected function write(\Monolog\LogRecord $record): void
     {
         $config = config('logger-ui');
+
+        $record = $record->toArray();
 
         $data = array(
             'app_name'      => $config['app']['name'],
