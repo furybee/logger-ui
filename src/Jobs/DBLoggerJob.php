@@ -13,6 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DBLoggerJob implements ShouldQueue
 {
@@ -21,33 +22,33 @@ class DBLoggerJob implements ShouldQueue
     /**
      * @var int
      */
-    public $timeout = 300;
+    public int $timeout = 300;
 
     /**
      * @var int
      */
-    public $tries = 3;
+    public int $tries = 3;
 
     /**
      * @var string
      */
-    private $dbConnection;
+    private string $dbConnection;
 
     /**
      * @var string
      */
-    private $dbTable;
+    private string $dbTable;
 
     /**
      * @var array
      */
-    private $record;
+    private array $record;
 
     /**
      * ExportJob constructor.
      *
-     * @param string $dsn
-     * @param array $data
+     * @param array $dbConfig
+     * @param array $record
      */
     public function __construct(array $dbConfig, array $record)
     {
@@ -59,24 +60,38 @@ class DBLoggerJob implements ShouldQueue
         $this->record['context'] = $this->formatContext($record['context']);
     }
 
+    /**
+     * @throws \DateMalformedStringException
+     * @throws \Throwable
+     */
     public function handle(): void
     {
-        retry(5, function () {
-            $createdAt = new DateTimeImmutable();
-            $this->record['created_at'] = $createdAt->format('Y-m-d H:i:s.u');
+        try {
+            retry(5, function () {
+                $createdAt = new DateTimeImmutable("now", new \DateTimeZone('UTC'));
 
-            DB::connection($this->dbConnection)->table($this->dbTable)->insert($this->record);
-        }, 500);
+                $this->record['created_at'] = $createdAt->format('Y-m-d H:i:s.u');
+
+                DB::transaction(function () {
+                    DB::connection($this->dbConnection)->table($this->dbTable)->insert($this->record);
+                });
+            }, 100);
+        } catch (Exception $exception) {
+            // Write exception in emergency log :
+            logger()->channel('single')
+                ->emergency($exception->getMessage(), ['exception' => $exception]);
+        }
+
     }
 
     /**
      *
-     * @param array $message
+     * @param $message
      * @return string
      */
     protected function formatMessage($message): string
     {
-        if ($message instanceof Collection || $message instanceof EloquentCollection || $message instanceof Arrayable) {
+        if (method_exists($message, 'toArray')) {
             $message = $message->toArray();
         }
 
@@ -102,9 +117,12 @@ class DBLoggerJob implements ShouldQueue
 
         if ($exception instanceof Exception) {
             $context['exception'] = [
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
                 'name' => $exception::class,
                 'message' => $exception->getMessage(),
                 'stacktrace' => $exception->getTraceAsString(),
+                'code' => $exception->getCode(),
             ];
         }
 
