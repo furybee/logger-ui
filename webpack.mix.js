@@ -14,33 +14,33 @@ const webpack = require("webpack");
  */
 
 mix
-  .options({
-    terser: {
-      terserOptions: {
-        compress: {
-          drop_console: true,
+    .options({
+        terser: {
+            terserOptions: {
+                compress: {
+                    drop_console: true,
+                },
+            },
         },
-      },
-    },
-  })
-  .postCss("resources/css/logger-ui.css", "public/app.css", [
-    require("postcss-import"),
-    require("tailwindcss"),
-  ])
-  .setPublicPath("public")
-  .js("resources/js/app.js", "public")
-  .version()
-  .webpackConfig({
-    resolve: {
-      symlinks: false,
-      alias: {
-        "@": path.resolve(__dirname, "resources/js/"),
-      },
-    },
-    plugins: [new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)],
-  })
-  .copy("public", "../logger-uitest/public/vendor/logger-ui")
-  .copy(
-    "public",
-    "./vendor/orchestra/testbench-core/laravel/public/vendor/logger-ui"
-  );
+    })
+    .postCss("resources/css/logger-ui.css", "public/app.css", [
+        require("postcss-import"),
+        require("tailwindcss"),
+    ])
+    .setPublicPath("public")
+    .js("resources/js/app.js", "public")
+    .version()
+    .webpackConfig({
+        resolve: {
+            symlinks: false,
+            alias: {
+                "@": path.resolve(__dirname, "resources/js/"),
+            },
+        },
+        plugins: [new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)],
+    })
+    .copy("public", "../logger-uitest/public/vendor/logger-ui")
+    .copy(
+        "public",
+        "./vendor/orchestra/testbench-core/laravel/public/vendor/logger-ui"
+    );

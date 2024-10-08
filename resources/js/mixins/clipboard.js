@@ -2,7 +2,7 @@ export default {
     methods: {
         copyToClipboard(value) {
             console.log(value);
-            
+
             const el = document.createElement('textarea');
             el.value = value;
             el.setAttribute('readonly', '');

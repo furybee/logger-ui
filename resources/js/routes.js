@@ -1,5 +1,5 @@
 export default [
-    { path: '/', redirect: '/home' },
+    {path: '/', redirect: '/home'},
 
     {
         path: '/home',

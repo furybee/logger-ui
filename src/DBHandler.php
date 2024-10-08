@@ -29,17 +29,17 @@ class DBHandler extends AbstractProcessingHandler
         $record = $record->toArray();
 
         $data = array(
-            'app_name'      => $config['app']['name'],
-            'environment'   => config('app.env'),
-            'channel'       => $record['channel'],
-            'level_name'    => $record['level_name'],
-            'level'         => $record['level'],
-            'message'       => $record['message'],
-            'context'       => $record['context'],
-            'extra'         => json_encode($record['extra']),
-            'user_id'       => optional(auth())->id(),
-            'logged_at'     => $record['datetime']->format('Y-m-d H:i:s.u'),
-            'created_at'    => null,
+            'app_name' => $config['app']['name'],
+            'environment' => config('app.env'),
+            'channel' => $record['channel'],
+            'level_name' => $record['level_name'],
+            'level' => $record['level'],
+            'message' => $record['message'],
+            'context' => $record['context'],
+            'extra' => json_encode($record['extra']),
+            'user_id' => optional(auth())->id(),
+            'logged_at' => $record['datetime']->format('Y-m-d H:i:s.u'),
+            'created_at' => null,
         );
 
         $job = new DBLoggerJob($config['db'], $data);

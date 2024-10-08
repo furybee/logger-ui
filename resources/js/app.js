@@ -9,7 +9,7 @@ import VueRouter from "vue-router";
 const token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
-  axios.defaults.headers.common["X-CSRF-TOKEN"] = token.content;
+    axios.defaults.headers.common["X-CSRF-TOKEN"] = token.content;
 }
 
 Vue.use(VueRouter);
@@ -17,27 +17,27 @@ Vue.use(VueRouter);
 moment.tz.setDefault("utc");
 
 const router = new VueRouter({
-  routes: Routes,
-  mode: "history",
-  base: "/logger-ui",
+    routes: Routes,
+    mode: "history",
+    base: "/logger-ui",
 });
 
 router.beforeEach((to, from, next) => {
-  to.meta.title = to.meta.createTitle(to.params);
+    to.meta.title = to.meta.createTitle(to.params);
 
-  document.title = "Logger UI - " + to.meta.title;
+    document.title = "Logger UI - " + to.meta.title;
 
-  next();
+    next();
 });
 
 Vue.component(
-  "clipboard-copy",
-  require("./components/icons/ClipboardCopy.vue").default
+    "clipboard-copy",
+    require("./components/icons/ClipboardCopy.vue").default
 );
 
 Vue.mixin(Base);
 
 new Vue({
-  el: "#logger-ui",
-  router,
+    el: "#logger-ui",
+    router,
 });

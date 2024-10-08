@@ -47,7 +47,7 @@ class DBLoggerJob implements ShouldQueue
      * ExportJob constructor.
      *
      * @param string $dsn
-     * @param array  $data
+     * @param array $data
      */
     public function __construct(array $dbConfig, array $record)
     {

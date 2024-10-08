@@ -2,16 +2,16 @@
 
 ![logger-ui-main](https://user-images.githubusercontent.com/45472257/144709342-cfd94388-0fb5-4297-b52f-eb6ba448e8af.png)
 
-
 ## Installing The Logger UI Dashboard
 
-This package provides a beautiful dashboard through your application that allows you to send logs to a database and show them. The Logger UI dashboard package can be installed in your project using Composer:
+This package provides a beautiful dashboard through your application that allows you to send logs to a database and show
+them. The Logger UI dashboard package can be installed in your project using Composer:
 
 ```sh
 composer require furybee/logger-ui
 ```
 
-After installing Logger UI, you may publish its assets using the `logger-ui:install` Artisan command. 
+After installing Logger UI, you may publish its assets using the `logger-ui:install` Artisan command.
 
 ```sh
 php artisan logger-ui:install
@@ -46,9 +46,11 @@ LOG_CHANNEL=logger-ui
 
 ## Dashboard Authorization
 
-Logger UI exposes a dashboard at the `/logger-ui` URI. Within your `app/Providers/LoggerUiServiceProvider.php` file, there is a gate method that controls access to the Logger UI dashboard. 
+Logger UI exposes a dashboard at the `/logger-ui` URI. Within your `app/Providers/LoggerUiServiceProvider.php` file,
+there is a gate method that controls access to the Logger UI dashboard.
 
-By default, all guests are restricted. You should modify this gate as needed to grant access to your Logger UI dashboard:
+By default, all guests are restricted. You should modify this gate as needed to grant access to your Logger UI
+dashboard:
 
 ```php
 /**
@@ -76,13 +78,16 @@ When upgrading to a new version of Logger UI, you should re-publish Logger UI's 
 php artisan logger-ui:publish
 ```
 
-To keep the assets up-to-date and avoid issues in future updates, you may add the `logger-ui:publish` command to the post-update-cmd scripts in your application's `composer.json` file:
+To keep the assets up-to-date and avoid issues in future updates, you may add the `logger-ui:publish` command to the
+post-update-cmd scripts in your application's `composer.json` file:
 
 ```json
 {
-  "scripts": {
-    "post-update-cmd": ["@php artisan logger-ui:publish --ansi"]
-  }
+    "scripts": {
+        "post-update-cmd": [
+            "@php artisan logger-ui:publish --ansi"
+        ]
+    }
 }
 ```
 
@@ -94,7 +99,8 @@ If you have not published Logger UI's configuration file, you may do so using th
 php artisan vendor:publish --tag=logger-ui-config
 ```
 
-Once the configuration file has been published, you may edit Logger UI's middleware, queue name or database by tweaking the configuration options within this file.
+Once the configuration file has been published, you may edit Logger UI's middleware, queue name or database by tweaking
+the configuration options within this file.
 
 ### Database
 
@@ -109,7 +115,8 @@ If needed, you may update DB Connection and the Table where logger-ui will store
 
 ### Queue
 
-If you are using a Queue Driver different of `sync`, you may update the Queue Configuration. Indeed, with sync driver, the log data will be sent in the request lifecycle, and it will slow down the server response time.
+If you are using a Queue Driver different of `sync`, you may update the Queue Configuration. Indeed, with sync driver,
+the log data will be sent in the request lifecycle, and it will slow down the server response time.
 
 The log data may be sent by a Job.
 
