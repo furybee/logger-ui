@@ -22,7 +22,7 @@
       px-10
     "
         >
-            <div class="py-4 w-full items-center grid grid-cols-1 md:grid-cols-7 gap-4">
+            <div class="py-4 w-full items-center grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div class="shadow-sm">
         <span
             class="
@@ -162,39 +162,39 @@
                     </select>
                 </div>
 
-                <div class="rounded-md shadow-sm w-full col-span-1 md:col-span-2">
-        <span
-            class="
-            inline-flex
-            items-center
-            px-3
-            rounded-t-md
-            border border-r-0 border-gray-900
-            bg-gray-900
-            text-gray-500
-            sm:text-sm
-          "
-        >
-          <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-3 w-3 m-0 p-0"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-          >
-            <path
-                fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd"
-            />
-          </svg><span class="invisible w-0">s</span>
-        </span>
-                    <input
-                        type="search"
-                        class="bg-gray-800 w-full rounded-r-md rounded-b-md"
-                        v-model="value.query"
-                        placeholder="Search..."
-                    />
-                </div>
+<!--                <div class="rounded-md shadow-sm w-full col-span-1 md:col-span-2">-->
+<!--        <span-->
+<!--            class="-->
+<!--            inline-flex-->
+<!--            items-center-->
+<!--            px-3-->
+<!--            rounded-t-md-->
+<!--            border border-r-0 border-gray-900-->
+<!--            bg-gray-900-->
+<!--            text-gray-500-->
+<!--            sm:text-sm-->
+<!--          "-->
+<!--        >-->
+<!--          <svg-->
+<!--              xmlns="http://www.w3.org/2000/svg"-->
+<!--              class="h-3 w-3 m-0 p-0"-->
+<!--              viewBox="0 0 20 20"-->
+<!--              fill="currentColor"-->
+<!--          >-->
+<!--            <path-->
+<!--                fill-rule="evenodd"-->
+<!--                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"-->
+<!--                clip-rule="evenodd"-->
+<!--            />-->
+<!--          </svg><span class="invisible w-0">s</span>-->
+<!--        </span>-->
+<!--&lt;!&ndash;                    <input&ndash;&gt;-->
+<!--&lt;!&ndash;                        type="search"&ndash;&gt;-->
+<!--&lt;!&ndash;                        class="bg-gray-800 w-full rounded-r-md rounded-b-md"&ndash;&gt;-->
+<!--&lt;!&ndash;                        v-model="value.query"&ndash;&gt;-->
+<!--&lt;!&ndash;                        placeholder="Search..."&ndash;&gt;-->
+<!--&lt;!&ndash;                    />&ndash;&gt;-->
+<!--                </div>-->
             </div>
         </div>
     </div>

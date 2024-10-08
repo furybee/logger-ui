@@ -1,9 +1,10 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
-
-module.exports = {
-    purge: {
-        content: ['./resources/views/**/*.blade.php', './resources/js/**/*.vue', './resources/js/**/*.js'],
-    },
+/** @type {import('tailwindcss').Config} */
+export default {
+    content: [
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
+    ],
     theme: {
         extend: {
             colors: {
@@ -12,13 +13,35 @@ module.exports = {
                 }
             },
             fontFamily: {
-                sans: ['Source Code Pro', ...defaultTheme.fontFamily.sans],
+                sans: ['Source Code Pro', 'sans-serif'],
             },
         },
     },
-    variants: {},
-    plugins: [
-        require('@tailwindcss/forms'),
-        require('@tailwindcss/ui')
-    ],
+    plugins: [],
 };
+
+// const defaultTheme = require('tailwindcss/defaultTheme');
+//
+// module.exports = {
+//     purge: {
+//         content: ['./resources/views/**/*.blade.php', './resources/js/**/*.vue', './resources/js/**/*.js'],
+//     },
+//     theme: {
+//         extend: {
+//             colors: {
+//                 grey: {
+//                     '950': '#0e1420'
+//                 }
+//             },
+//             fontFamily: {
+//                 sans: ['Source Code Pro', ...defaultTheme.fontFamily.sans],
+//             },
+//         },
+//     },
+//     variants: {},
+//     plugins: [
+//         // require('@tailwindcss/forms'),
+//         // require('@tailwindcss/ui')
+//         // require('daisyui'),
+//     ],
+// };

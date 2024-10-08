@@ -7,14 +7,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <meta name="robots" content="noindex, nofollow"/>
 
-    <!-- Title -->
     <title>Logger UI - {{ config('logger-ui.project') }} - {{ config('logger-ui.environment') }}</title>
 
-    <!-- Style sheets -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
 
-    <link href="{{ asset(mix('app.css', 'vendor/logger-ui')) }}" rel="stylesheet" type="text/css"/>
+   {{ Vite::useBuildDirectory('vendor/logger-ui')->withEntryPoints([
+        'resources/js/app.js',
+]) }}
     <link rel="icon" type="image/png" href="{{ asset('vendor/logger-ui/favicon.png') }}"/>
 </head>
 <body class="bg-gray-900 h-full">
@@ -22,6 +22,6 @@
     <router-view></router-view>
 </div>
 
-<script src="{{ asset(mix('app.js', 'vendor/logger-ui')) }}"></script>
+@vite('resources/js/app.js')
 </body>
 </html>

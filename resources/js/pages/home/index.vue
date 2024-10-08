@@ -12,8 +12,19 @@
         px-10
       "
         >
-            <div class="flex w-full items-center justify-between">
+            <div class="flex w-full items-center gap-4">
                 <h1>Logger UI</h1>
+
+                <div class="flex-1">
+                    <div>
+                        <input
+                            type="search"
+                            class="bg-gray-800 w-full rounded-md"
+                            v-model="filter.query"
+                            placeholder="Search..."
+                        />
+                    </div>
+                </div>
 
                 <div class="text-sm flex items-center">
                     <button class="mr-3" @click.prevent="loadOldest">Load Oldest</button>
@@ -294,6 +305,12 @@ export default {
                 .then((response) => {
                     this.pagination = response.data.pagination;
 
+                    const newLines = collect(response.data.lines).reject((line) => {
+                        return this.lines.some((oldLine) => {
+                            return oldLine.id === line.id;
+                        });
+                    });
+
                     this.lines = collect(this.lines)
                         .when(this.filter.date !== "", (lines) => {
                             return lines.where("logged_at", "<=", this.filter.date);
@@ -318,8 +335,7 @@ export default {
                                 );
                             });
                         })
-                        .merge(response.data.lines)
-                        .unique("id")
+                        .merge(newLines)
                         .sortBy("logged_at")
                         .all();
 
