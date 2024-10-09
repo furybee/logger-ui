@@ -2,6 +2,7 @@
 
 namespace FuryBee\LoggerUi\Http\Repositories;
 
+use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -17,12 +18,44 @@ class LogRepository
     }
 
     /**
-     *
+     * @param array $filters
      * @return Builder
      */
-    public function getBuilder(): Builder
+    public function getBuilder(array $filters = []): Builder
     {
-        return DB::connection($this->connection)->table($this->table);
+        return DB::connection($this->connection)
+            ->table($this->table)
+            ->when(isset($filters['date_from']) === true, function (Builder $builder) use ($filters) {
+                $date = Carbon::createFromFormat('Y-m-d', $filters['date_from'])->startOfDay();
+
+                $builder->where('logged_at', '>=', $date);
+            })
+            ->when(isset($filters['date_to']) === true, function (Builder $builder) use ($filters) {
+                $date = Carbon::createFromFormat('Y-m-d', $filters['date_to'])->endOfDay();
+
+                $builder->where('logged_at', '<=', $date);
+            })
+            ->when(isset($filters['app_name']) === true, function (Builder $builder) use ($filters) {
+                $builder->where('app_name', $filters['app_name']);
+            })
+            ->when(isset($filters['environment']) === true, function (Builder $builder) use ($filters) {
+                $builder->where('environment', $filters['environment']);
+            })
+            ->when(isset($filters['channel']) === true, function (Builder $builder) use ($filters) {
+                $builder->where('channel', $filters['channel']);
+            })
+            ->when(isset($filters['level_name']) === true, function (Builder $builder) use ($filters) {
+                $builder->where('level_name', $filters['level_name']);
+            })
+            ->when(isset($filters['query']) === true, function (Builder $builder) use ($filters) {
+                $query = $filters['query'];
+
+                $builder->where(function (Builder $builder) use ($query) {
+                    $builder->where('message', 'LIKE', "%{$query}%");
+                    $builder->orWhere('context', 'LIKE', "%{$query}%");
+                    $builder->orWhere('extra', 'LIKE', "%{$query}%");
+                });
+            });
     }
 
     public function getAppList(): array

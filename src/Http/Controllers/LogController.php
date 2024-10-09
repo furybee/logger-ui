@@ -31,9 +31,7 @@ class LogController
         'per_page' => 300,
     ];
 
-    protected $connection;
-    protected $table;
-    protected $logRepository;
+    protected LogRepository $logRepository;
 
     /**
      *
@@ -45,10 +43,8 @@ class LogController
     }
 
     /**
-     *
      * @param Request $request
-     *
-     * @return array
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -63,42 +59,18 @@ class LogController
         ]);
 
         if ($validator->fails()) {
-            return response('Validation Error.', 422);
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 422);
         }
 
         $filters = collect($request->only(self::ALLOWED_FILTERS))
             ->filter()
             ->toArray();
 
-        $paginator = $this->logRepository->getBuilder()
-            ->when(isset($filters['date']) === true, function (Builder $builder) use ($filters) {
-                $date = Carbon::createFromFormat('Y-m-d', $filters['date'])->endOfDay();
-
-                $builder->where('logged_at', '<=', $date);
-            })
-            ->when(isset($filters['app_name']) === true, function (Builder $builder) use ($filters) {
-                $builder->where('app_name', $filters['app_name']);
-            })
-            ->when(isset($filters['environment']) === true, function (Builder $builder) use ($filters) {
-                $builder->where('environment', $filters['environment']);
-            })
-            ->when(isset($filters['channel']) === true, function (Builder $builder) use ($filters) {
-                $builder->where('channel', $filters['channel']);
-            })
-            ->when(isset($filters['level_name']) === true, function (Builder $builder) use ($filters) {
-                $builder->where('level_name', $filters['level_name']);
-            })
-            ->when(isset($filters['query']) === true, function (Builder $builder) use ($filters) {
-                $query = $filters['query'];
-
-                $builder->where(function (Builder $builder) use ($query) {
-                    $builder->where('message', 'LIKE', "%{$query}%");
-                    $builder->orWhere('context', 'LIKE', "%{$query}%");
-                    $builder->orWhere('extra', 'LIKE', "%{$query}%");
-                });
-            })
+        $paginator = $this->logRepository->getBuilder($filters)
             ->orderByDesc('logged_at')
-            ->simplePaginate(self::DEFAULT_FILTERS['per_page'])
+            ->paginate(self::DEFAULT_FILTERS['per_page'])
             ->setPageName('page')
             ->toArray();
 
@@ -106,7 +78,7 @@ class LogController
 
         unset($paginator['data']);
 
-        return [
+        return response()->json([
             'pagination' => $paginator,
             'lines' => LogResource::collection($data),
             'available_filters' => [
@@ -115,6 +87,6 @@ class LogController
                 'channels' => $this->logRepository->getChannelList(),
                 'level_names' => $this->logRepository->getLevelNameList()
             ],
-        ];
+        ]);
     }
 }

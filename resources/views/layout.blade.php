@@ -19,8 +19,8 @@
     }}
     <link rel="icon" type="image/png" href="{{ asset('vendor/logger-ui/favicon.png') }}"/>
 </head>
-<body class="bg-gray-900 h-full">
-<div id="logger-ui" class="main h-full">
+<body class="h-full">
+<div id="logger-ui" class="main bg-base-100 h-full">
     <router-view></router-view>
 </div>
 

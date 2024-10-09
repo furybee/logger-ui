@@ -1,408 +1,350 @@
 <template>
-    <div class="h-full flex flex-col">
-        <div
-            class="
-        h-16
-        bg-grey-950
-        text-gray-100
-        font-bold
-        text-2xl
-        flex
-        items-center
-        px-10
-      "
-        >
-            <div class="flex w-full items-center gap-4">
-                <h1>Logger UI</h1>
-
-                <div class="flex-1">
-                    <div>
-                        <input
-                            type="search"
-                            class="bg-gray-800 w-full rounded-md"
-                            v-model="filter.query"
-                            placeholder="Search..."
-                        />
-                    </div>
+    <div class="flex flex-col h-screen overflow-hidden">
+        <div class="navbar bg-base-200">
+            <div class="flex-0">
+                <a class="btn btn-ghost text-xl">LoggerUI</a>
+            </div>
+            <div class="flex-1 gap-2">
+                <div class="form-control w-full">
+                    <input type="text" placeholder="Search" class="input input-bordered w-full" />
                 </div>
+                <div class="flex gap-2 items-center">
+                    <div class="mx-2">
+                        <div v-if="isPlaying" class="radial-progress text-success flex items-center justify-center" :style="'--size:2rem; --value:'+ intervalTickerPercentage +';'" role="progressbar">
+                            <button class="btn btn-xs btn-ghost btn-circle relative z-20" @click="pause()">
+                                <PauseIcon class="size-4" />
+                            </button>
+                        </div>
 
-                <div class="text-sm flex items-center">
-                    <button class="mr-3" @click.prevent="loadOldest">Load Oldest</button>
+                        <div v-else-if="isIdle" class="radial-progress text-success flex items-center justify-center" :style="'--size:2rem; --value:100;'" role="progressbar">
+                            <button class="btn btn-xs btn-ghost btn-circle relative z-20" @click="pause()">
+                                <PauseIcon class="size-4" />
+                            </button>
+                        </div>
 
-                    <button
-                        class="border-green-400 border-2 rounded-full focus:outline-none"
-                        v-show="isLive === true"
-                        @click.prevent="pause"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-10 w-10"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path
-                                fill-rule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                clip-rule="evenodd"
-                            />
-                        </svg>
+                        <div v-else class="radial-progress text-warning flex items-center justify-center" :style="'--size:2rem; --value:100;'" role="progressbar">
+                            <button class="btn btn-xs btn-ghost btn-circle relative z-20" @click="play()">
+                                <PlayIcon class="size-4" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-xs btn-ghost btn-circle relative z-20" @click="toggleFilters()">
+                        <FilterIcon />
                     </button>
-                    <button
-                        class="border-yellow-400 border-2 rounded-full focus:outline-none"
-                        v-show="isLive === false"
-                        @click.prevent="play"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-10 w-10"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path
-                                fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                                clip-rule="evenodd"
-                            />
-                        </svg>
-                    </button>
+
+                    <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                            <div class="w-10 rounded-full flex items-center justify-center">
+                                <SettingsIcon />
+                            </div>
+                        </div>
+                        <ul
+                            tabindex="0"
+                            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1000] mt-3 w-52 p-2 shadow">
+                            <li><a>Settings</a></li>
+                            <li><a>Logout</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div ref="logLines" id="logLines" class="flex flex-1 px-2 overflow-y-auto">
-            <ul class="flex flex-col w-full">
-                <li class="flex mb-1 group" v-for="line in lines" :key="line.id">
-          <span
-              class="
-              inline-flex
-              items-center
-              justify-center
-              px-2
-              py-0.5
-              rounded
-              text-xs
-              font-bold
-              w-20
-              mr-1
-              h-6
-              cursor-pointer
-            "
-              :class="badgeClass(line.level)"
-              @click="filter.level_name = line.level_name"
-          >
-            {{ line.level_name }}</span
-          >
-                    <span
-                        class="
-              inline-flex
-              items-center
-              justify-center
-              px-2
-              py-0.5
-              rounded
-              text-xs
-              bg-gray-800
-              text-gray-200
-              font-bold
-              mr-1
-              h-6
-            "
-                    >
-            {{ line.formatted_logged_at }}</span
-                    >
-                    <div class="flex-1 text-gray-400 group-hover:bg-gray-800">
-                        <p class="text-sm">{{ line.message }}</p>
-                        <div v-if="line.has_details_displayed === true" class="text-sm">
-                            <div v-if="line.context.length !== 0">
-                                <p class="font-bold">Context</p>
-                                <p v-if="typeof line.context === 'string'">
-                                    {{ line.context }}
-                                </p>
-                                <ul v-else class="ml-2 m-h-64 overflow-y-auto">
-                                    <li
-                                        class="mb-1"
-                                        v-for="(value, key) of line.context"
-                                        :key="key"
-                                    >
-                                        <span class="font-bold">{{ key }}:</span>
-                                        <div
-                                            class="whitespace-normal"
-                                            v-if="key !== 'exception'"
-                                            v-html="value"
-                                        ></div>
-                                        <template v-else>
-                                            <ul class="ml-4">
-                                                <li
-                                                    class="mb-1"
-                                                    v-for="(subValue, subKey) of value"
-                                                    :key="subKey"
-                                                >
-                                                    <span class="font-bold">{{ subKey }}:</span>
-                                                    <div
-                                                        class="whitespace-normal"
-                                                        v-html="subValue"
-                                                    ></div>
-                                                </li>
-                                            </ul>
-                                        </template>
-                                    </li>
-                                </ul>
-                                <hr class="border-gray-700"/>
-                            </div>
+        <div v-if="hasLoadMore">
+            <div v-if="isFilterShowed">
+                Filters
+                <!--            <FiltersBar :available-filters="availableFilters" v-model="filters"/>-->
+            </div>
 
-                            <div v-if="line.extra.length !== 0">
-                                <p class="font-bold">Extra</p>
-                                <p v-if="typeof line.extra === 'string'">
-                                    {{ line.extra }}
-                                </p>
-                                <ul v-else>
-                                    <li v-for="(value, key) in line.extra" :key="key">
-                                        <span class="font-bold">{{ key }}:</span>
-                                        <div class="whitespace-normal" v-html="value"></div>
-                                    </li>
-                                </ul>
-                                <hr class="border-gray-700"/>
-                            </div>
-                        </div>
-                    </div>
-                    <a
-                        v-if="line.context.length !== 0 || line.extra.length !== 0"
-                        href="#"
-                        class="
-              ml-1
-              inline-flex
-              items-center
-              justify-center
-              bg-gray-800
-              text-gray-300
-              p-3
-              h-6
-              w-6
-              font-bold
-            "
-                        @click.prevent="toggleDetails(line)"
-                    >
-                        <span v-if="line.has_details_displayed === false">+</span>
-                        <span v-else>-</span>
-                    </a>
-                </li>
-            </ul>
+            <div class="text-center p-1 text-xs">
+                <button class="btn btn-xs btn-primary" @click="loadMore()" :disabled="isLoadingMore">
+                    <DoubleChevronUp class="size-4" />
+                    Load Previous Logs
+                    <DoubleChevronUp class="size-4" />
+                </button>
+            </div>
         </div>
 
-        <FilterBar
-            v-if="availableFilters !== undefined"
-            :available-filters="availableFilters"
-            v-model="filter">
-        </FilterBar>
+        <div id="logLines" ref="logLines" class="flex-1 bg-base-100 overflow-y-auto overflow-x-hidden">
+            <LogRecords :filters="filters" :records="records"/>
+        </div>
+
+        <div v-if="pagination" class="bg-base-300 text-center p-1 text-xs">
+            Last Log At: {{ records && records.length ? records[records.length - 1].formatted_logged_at : "-" }}
+        </div>
     </div>
 </template>
-
-<script>
-import collect from "collect.js";
-import Clipboard from "../../mixins/clipboard";
-import FilterBar from "./partials/FilterBar.vue";
+<script setup lang="ts">
+import SettingsIcon from "../../icons/SettingsIcon.vue";
+import {computed, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch, watchEffect} from "vue";
+import LogRecords from "./partials/LogRecords.vue";
 import axios from "axios";
+import collect from "collect.js";
+import PauseIcon from "../../icons/PauseIcon.vue";
+import PlayIcon from "../../icons/PlayIcon.vue";
+import FiltersBar from "./FiltersBar.vue";
+import {LogFiltersType, RefreshLogParamsType} from "../../types";
+import DoubleChevronUp from "../../icons/DoubleChevronUp.vue";
+import FilterIcon from "../../icons/FilterIcon.vue";
 
-export default {
-    components: {FilterBar},
-    mixins: [Clipboard],
-    data() {
-        return {
-            refreshSeconds: 10,
-            isLive: true,
-            lines: [],
-            allowedFilters: [
-                "date",
-                "app_name",
-                "channel",
-                "level_name",
-                "query",
-                "page",
-            ],
-            availableFilters: {
-                app_names: [],
-                environments: [],
-                channels: [],
-                level_names: [],
-            },
-            loadedPages: [],
-            pagination: null,
-            filter: {
-                date: "",
-                app_name: "",
-                environment: "",
-                channel: "",
-                level_name: "",
-                query: "",
-                page: 1,
-            },
-            timeoutId: undefined,
-            intervalTimeout: null,
-        };
-    },
-    mounted() {
+const settings = ref( {
+    showDate: true,
+    showLevel: true,
+});
+
+const allowedFilters = [
+    "date_from",
+    "date_to",
+    "app_name",
+    "channel",
+    "level_name",
+    "query",
+    "page",
+];
+
+const pagination = ref(null);
+const refreshSeconds = ref(10);
+const isLoadingMore = ref(false);
+
+const filters = ref({
+    date_to: "",
+    date_from: "",
+    app_name: "",
+    environment: "",
+    channel: "",
+    level_name: "",
+    query: "",
+    page: 1,
+});
+
+let records = ref([]);
+let availableFilters = ref({
+    app_names: [],
+    environments: [],
+    channels: [],
+    level_names: [],
+});
+
+let intervalRefreshLogs = null;
+let intervalTicker = null;
+let intervalTickerElapsed = ref(0);
+let intervalTickerPercentage = ref(0);
+
+const isPlaying = ref(false);
+const isIdle = ref(false);
+
+const lastPreviousPageLoaded = ref(1);
+
+const loadMore = async () => {
+    if (isLoadingMore.value) {
+        return;
+    }
+
+    isLoadingMore.value = true;
+
+    if (!pagination.value.next_page_url) {
+        return;
+    }
+
+    lastPreviousPageLoaded.value = pagination.value.current_page + 1;
+
+    await refreshLogs({
+        customFilters: {
+            page: lastPreviousPageLoaded.value
+        }
+    });
+
+    isLoadingMore.value = false;
+
+    scrollToTop();
+};
+
+onMounted(async () => {
+    const url = new URL(window.location);
+
+    allowedFilters.forEach((value) => {
+        filters.value[value] = "";
+    });
+
+    url.searchParams.forEach((value, key) => {
+        filters.value[key] = value;
+    });
+
+    // if (logLines.value) {
+    //     logLines.value.addEventListener('scroll', handleScroll);
+    // }
+
+    await refreshLogs({forceScrollToBottom: true});
+
+    play();
+});
+
+onUnmounted(() => {
+    clearInterval(intervalRefreshLogs);
+    clearInterval(intervalTicker);
+
+    // if (logLines.value) {
+    //     logLines.value.removeEventListener('scroll', handleScroll);
+    // }
+});
+
+const startTicker = () => {
+    intervalTicker = setInterval(() => {
+        intervalTickerElapsed.value++;
+        intervalTickerPercentage.value = (intervalTickerElapsed.value / refreshSeconds.value) * 100;
+
+        if (intervalTickerElapsed.value >= refreshSeconds.value) {
+            intervalTickerElapsed.value = 0;
+            intervalTickerPercentage.value = 100;
+        }
+    }, 1000);
+};
+
+const isFilterShowed = ref(false);
+
+const toggleFilters = () => {
+    isFilterShowed.value = !isFilterShowed.value;
+};
+
+const play = () => {
+    pause();
+
+    isPlaying.value = true;
+
+    if (filters.value.page !== 1) {
+        filters.value.page = 1;
+    }
+
+    startTicker();
+
+    intervalRefreshLogs = setInterval(async () => {
+        pause();
+
+        await refreshLogs();
+
+        play();
+    }, refreshSeconds.value * 1000);
+}
+
+const pause = () => {
+    isIdle.value = false;
+    isPlaying.value = false;
+
+    intervalTickerElapsed.value = 0;
+    intervalTickerPercentage.value = 0;
+
+    clearInterval(intervalRefreshLogs);
+    clearInterval(intervalTicker);
+};
+
+const hasLoadMore = computed(() => {
+    return pagination.value && pagination.value.next_page_url;
+});
+
+
+let timeoutFilter = null;
+
+watch(
+    filters.value,
+    (newValue, oldValue) => {
+        clearTimeout(timeoutFilter);
+
         const url = new URL(window.location);
 
-        const filters = {};
+        for (const [key, value] of Object.entries(newValue)) {
+            if (typeof value === 'number' && value <= 0) {
+                url.searchParams.delete(key);
+                continue;
+            }
 
-        this.allowedFilters.forEach((value) => {
-            filters[value] = "";
-        });
+            if (typeof value === 'string' && value.trim().length === 0) {
+                url.searchParams.delete(key);
+                continue;
+            }
 
-        url.searchParams.forEach((value, key) => {
-            filters[key] = value;
-        });
+            url.searchParams.set(key, value);
+        }
 
-        this.filter = filters;
+        window.history.pushState({}, '', url);
 
-        this.play(true);
+        timeoutFilter = setTimeout(async () => {
+            pause();
+
+            await refreshLogs();
+
+            play();
+        }, 250);
     },
-    methods: {
-        play(skipApplyFilter) {
-            this.isLive = true;
+    { deep: true }
+);
 
-            if (this.filter.page !== 1) {
-                this.filter.page = 1;
-            }
+const scrollToBottom = (force: boolean = false) => {
+    if (!logLines.value) {
+        return;
+    }
 
-            if (skipApplyFilter === false) {
-                this.applyFilters();
-            }
+    const scrollTimeout = setTimeout(() => {
+        const tolerance = 50;
+        const isNearBottom = logLines.value.scrollHeight - logLines.value.scrollTop <= logLines.value.clientHeight + tolerance;
 
-            this.intervalTimeout = setInterval(() => {
-                this.applyFilters();
-            }, this.refreshSeconds * 1000);
-        },
-        pause() {
-            this.isLive = false;
+        if (isNearBottom || force) {
+            logLines.value.scrollTo(0, logLines.value.scrollHeight);
+        }
 
-            clearInterval(this.intervalTimeout);
-        },
-        loadOldest() {
-            if (this.pagination.next_page_url === null) {
-                console.log("No more data..");
-            }
+        clearTimeout(scrollTimeout);
+    }, 400);
+};
 
-            this.filter.page++;
-        },
-        loadNewest() {
-            if (this.pagination.prev_page_url === null) {
-                console.log("No more data..");
+const scrollToTop = () => {
+    if (!logLines.value) {
+        return;
+    }
 
-                this.filter.page = 1;
-            }
+    const scrollTimeout = setTimeout(() => {
+        logLines.value.scrollTo(0, 0);
 
-            this.filter.page--;
-        },
-        applyFilters() {
-            if (this.filter.page !== 1) {
-                this.pause();
-            }
+        clearTimeout(scrollTimeout);
+    }, 400);
+};
 
-            axios
-                .post("/logger-ui/logs", this.filter)
-                .then((response) => {
-                    this.pagination = response.data.pagination;
+const refreshLogs = async (params: LogFiltersType = { forceScrollToBottom: false, customFilters: {} }) => {
+    const { forceScrollToBottom = false, customFilters = {} } = params;
+    const requestFilters = {...filters.value, ...customFilters};
 
-                    this.lines = collect(this.lines)
-                        .when(this.filter.date !== "", (lines) => {
-                            return lines.where("logged_at", "<=", this.filter.date);
-                        })
-                        .when(this.filter.app_name !== "", (lines) => {
-                            return lines.where("app_name", this.filter.app_name);
-                        })
-                        .when(this.filter.environment !== "", (lines) => {
-                            return lines.where("environment", this.filter.environment);
-                        })
-                        .when(this.filter.channel !== "", (lines) => {
-                            return lines.where("channel", this.filter.channel);
-                        })
-                        .when(this.filter.level_name !== "", (lines) => {
-                            return lines.where("level_name", this.filter.level_name);
-                        })
-                        .when(this.filter.query !== "", (lines) => {
-                            return lines.filter((line) => {
-                                return (
-                                    line.message.includes(this.filter.query) ||
-                                    JSON.stringify(line.context).includes(this.filter.query)
-                                );
-                            });
-                        })
-                        .merge(response.data.lines)
-                        .unique("id")
-                        .sortBy("logged_at")
-                        .all();
+    console.log("Refreshing logs..", requestFilters);
 
-                    this.availableFilters = response.data.availableFilters;
+    isIdle.value = true;
 
-                    setTimeout(() => {
-                        const logLines = document.getElementById("logLines");
-                        logLines.scrollTo(0, logLines.scrollHeight);
-                        console.log("Scrolled to bottom", logLines.scrollHeight);
-                    }, 400);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
-        toggleDetails(line) {
-            line.has_details_displayed = !line.has_details_displayed;
-        },
-        badgeClass(level) {
-            if (level >= 400) {
-                return "bg-red-800 text-red-200";
-            }
+    const response = await axios.post("/logger-ui/logs", requestFilters);
 
-            if (level >= 300) {
-                return "bg-yellow-700 text-yellow-200";
-            }
+    pagination.value = response.data.pagination;
 
-            if (level >= 250) {
-                return "bg-blue-800 text-blue-200";
-            }
+    const newLines = response.data.lines.filter(
+        (line) => !records.value.some((record) => record.id === line.id)
+    );
 
-            return "bg-gray-800 text-gray-200";
-        },
-    },
-    watch: {
-        "filter.page": {
-            handler: function (newValue) {
-                this.loadedPages = collect(this.loadedPages)
-                    .push(newValue)
-                    .unique()
-                    .all();
-            },
-        },
-        filter: {
-            deep: true,
-            handler: function (newValue, oldValue) {
-                clearTimeout(this.timeoutId);
+    const updatedRecords = [...records.value, ...newLines];
 
-                const url = new URL(window.location);
+    records.value = collect(updatedRecords)
+        .when(requestFilters.date_to, (lines) => lines.where("logged_at", ">=", requestFilters.date_to))
+        .when(requestFilters.date_from, (lines) => lines.where("logged_at", "<=", requestFilters.date_from))
+        .when(requestFilters.app_name, (lines) => lines.where("app_name", requestFilters.app_name))
+        .when(requestFilters.environment, (lines) => lines.where("environment", requestFilters.environment))
+        .when(requestFilters.channel, (lines) => lines.where("channel", requestFilters.channel))
+        .when(requestFilters.level_name, (lines) => lines.where("level_name", requestFilters.level_name))
+        .when(requestFilters.query, (lines) =>
+            lines.filter((line) =>
+                line.message.includes(requestFilters.query) ||
+                JSON.stringify(line.context).includes(requestFilters.query)
+            )
+        )
+        .sortBy("logged_at")
+        .all();
 
-                for (const [key, value] of Object.entries(newValue)) {
-                    if (typeof value === "number" && value <= 0) {
-                        url.searchParams.delete(key);
+    isIdle.value = true;
 
-                        continue;
-                    }
+    availableFilters.value = response.data.availableFilters;
 
-                    if (typeof value === "string" && value.trim().length === 0) {
-                        url.searchParams.delete(key);
-
-                        continue;
-                    }
-
-                    url.searchParams.set(key, value);
-                }
-
-                window.history.pushState({}, "", url);
-
-                this.timeoutId = setTimeout(() => {
-                    this.applyFilters();
-                }, 500);
-            },
-        },
-    },
+    scrollToBottom(forceScrollToBottom);
 };
 </script>
