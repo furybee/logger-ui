@@ -24,7 +24,7 @@ export default defineConfig(({ command, mode }) => {
         ],
         resolve: {
             alias: {
-                'vue': 'vue/dist/vue.esm-bundler.js', // Ajoutez cette ligne
+                'vue': 'vue/dist/vue.esm-bundler.js',
                 '@': path.resolve(__dirname, 'resources/js'),
             },
         },

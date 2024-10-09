@@ -31,7 +31,7 @@
 
                     <button
                         class="border-green-400 border-2 rounded-full focus:outline-none"
-                        v-show="is_live === true"
+                        v-show="isLive === true"
                         @click.prevent="pause"
                     >
                         <svg
@@ -49,7 +49,7 @@
                     </button>
                     <button
                         class="border-yellow-400 border-2 rounded-full focus:outline-none"
-                        v-show="is_live === false"
+                        v-show="isLive === false"
                         @click.prevent="play"
                     >
                         <svg
@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div ref="logLines" class="flex flex-1 px-2 overflow-y-auto">
+        <div ref="logLines" id="logLines" class="flex flex-1 px-2 overflow-y-auto">
             <ul class="flex flex-col w-full">
                 <li class="flex mb-1 group" v-for="line in lines" :key="line.id">
           <span
@@ -190,8 +190,8 @@
         </div>
 
         <FilterBar
-            v-if="available_filters !== undefined"
-            :available-filters="available_filters"
+            v-if="availableFilters !== undefined"
+            :available-filters="availableFilters"
             v-model="filter">
         </FilterBar>
     </div>
@@ -209,7 +209,7 @@ export default {
     data() {
         return {
             refreshSeconds: 10,
-            is_live: true,
+            isLive: true,
             lines: [],
             allowedFilters: [
                 "date",
@@ -219,7 +219,7 @@ export default {
                 "query",
                 "page",
             ],
-            available_filters: {
+            availableFilters: {
                 app_names: [],
                 environments: [],
                 channels: [],
@@ -259,7 +259,7 @@ export default {
     },
     methods: {
         play(skipApplyFilter) {
-            this.is_live = true;
+            this.isLive = true;
 
             if (this.filter.page !== 1) {
                 this.filter.page = 1;
@@ -274,7 +274,7 @@ export default {
             }, this.refreshSeconds * 1000);
         },
         pause() {
-            this.is_live = false;
+            this.isLive = false;
 
             clearInterval(this.intervalTimeout);
         },
@@ -304,12 +304,6 @@ export default {
                 .then((response) => {
                     this.pagination = response.data.pagination;
 
-                    const newLines = collect(response.data.lines).reject((line) => {
-                        return this.lines.some((oldLine) => {
-                            return oldLine.id === line.id;
-                        });
-                    });
-
                     this.lines = collect(this.lines)
                         .when(this.filter.date !== "", (lines) => {
                             return lines.where("logged_at", "<=", this.filter.date);
@@ -334,15 +328,17 @@ export default {
                                 );
                             });
                         })
-                        .merge(newLines)
+                        .merge(response.data.lines)
+                        .unique("id")
                         .sortBy("logged_at")
                         .all();
 
-                    this.available_filters = response.data.available_filters;
+                    this.availableFilters = response.data.availableFilters;
 
                     setTimeout(() => {
-                        this.$refs.logLines.scrollTo(0, document.body.scrollHeight);
-                        // window.scrollTo(0, document.body.scrollHeight);
+                        const logLines = document.getElementById("logLines");
+                        logLines.scrollTo(0, logLines.scrollHeight);
+                        console.log("Scrolled to bottom", logLines.scrollHeight);
                     }, 400);
                 })
                 .catch((error) => {
