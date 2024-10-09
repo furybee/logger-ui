@@ -70,7 +70,7 @@ class LogController
 
         $paginator = $this->logRepository->getBuilder($filters)
             ->orderByDesc('logged_at')
-            ->paginate(self::DEFAULT_FILTERS['per_page'])
+            ->simplePaginate(self::DEFAULT_FILTERS['per_page'])
             ->setPageName('page')
             ->toArray();
 
@@ -81,12 +81,7 @@ class LogController
         return response()->json([
             'pagination' => $paginator,
             'lines' => LogResource::collection($data),
-            'available_filters' => [
-                'app_names' => $this->logRepository->getAppList(),
-                'environments' => $this->logRepository->getEnvList(),
-                'channels' => $this->logRepository->getChannelList(),
-                'level_names' => $this->logRepository->getLevelNameList()
-            ],
+            'available_filters' => $this->logRepository->getAvailableFilters(),
         ]);
     }
 }

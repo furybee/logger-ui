@@ -50,12 +50,12 @@
             </div>
         </div>
 
-        <div v-if="hasLoadMore">
-            <div v-if="isFilterShowed">
-                Filters
-                <!--            <FiltersBar :available-filters="availableFilters" v-model="filters"/>-->
-            </div>
+        <div class="bg-base-200" v-if="isFilterShowed">
+            Filters
+            <!--            <FiltersBar :available-filters="availableFilters" v-model="filters"/>-->
+        </div>
 
+        <div class="bg-base-200" v-if="hasLoadMore">
             <div class="text-center p-1 text-xs">
                 <button class="btn btn-xs btn-primary" @click="loadMore()" :disabled="isLoadingMore">
                     <DoubleChevronUp class="size-4" />
@@ -150,7 +150,7 @@ const loadMore = async () => {
 
     await refreshLogs({
         customFilters: {
-            page: lastPreviousPageLoaded.value
+            page: lastPreviousPageLoaded.value,
         }
     });
 

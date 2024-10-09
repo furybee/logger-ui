@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class LogRepository
 {
+    private string $connection;
+    private string $table;
+
     public function __construct()
     {
         $dbConfig = config('logger-ui.db');
@@ -56,6 +59,38 @@ class LogRepository
                     $builder->orWhere('extra', 'LIKE', "%{$query}%");
                 });
             });
+    }
+
+    public function getAvailableFilters(): array
+    {
+        $results = $this->getBuilder()
+            ->selectRaw('DISTINCT app_name as value, "app_name" as type')
+            ->unionAll(
+                $this->getBuilder()
+                    ->selectRaw('DISTINCT environment as value, "environment" as type')
+            )
+            ->unionAll(
+                $this->getBuilder()
+                    ->selectRaw('DISTINCT channel as value, "channel" as type')
+            )
+            ->unionAll(
+                $this->getBuilder()
+                    ->selectRaw('DISTINCT level_name as value, "level_name" as type')
+            )
+            ->get();
+
+        $distinctValues = [
+            'app_names' => [],
+            'environments' => [],
+            'channels' => [],
+            'level_names' => [],
+        ];
+
+        foreach ($results as $result) {
+            $distinctValues[$result->type.'s'][] = $result->value;
+        }
+
+        return $distinctValues;
     }
 
     public function getAppList(): array
