@@ -22,20 +22,24 @@ export type LogFiltersType = {
     date_from: string;
     date_to: string;
     page: number;
+    prevCursorUrl: string;
+    nextCursorUrl: string;
 };
+
+export const PAGINATION_MODE = {
+    INIT: 'init',
+    NEXT: 'next',
+    PREV: 'prev',
+}
 
 export type RefreshLogParamsType = {
-    forceScrollToBottom: boolean;
     customFilters: LogFiltersType;
+    forceScrollToBottom: boolean;
+    pagination_mode: PAGINATION_MODE;
+    url?: string;
 };
 
-export const LOG_LEVEL = {
-    'DEBUG': 'debug',
-    'INFO': 'info',
-    'NOTICE': 'notice',
-    'WARNING': 'warning',
-    'ERROR': 'error',
-    'CRITICAL': 'critical',
-    'ALERT': 'alert',
-    'EMERGENCY': 'emergency',
-};
+export type PaginatorType = {
+    next_page_url: null,
+    prev_page_url: null,
+}

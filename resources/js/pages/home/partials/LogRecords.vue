@@ -2,6 +2,7 @@
     <table class="table table-xs table-pin-rows">
         <thead>
             <tr class="bg-base-300">
+                <th>ID</th>
                 <th>Level</th>
                 <th>Date</th>
                 <th>Message</th>

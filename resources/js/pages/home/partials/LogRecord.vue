@@ -1,5 +1,8 @@
 <template>
     <tr class="hover:bg-base-200">
+        <td>
+            {{ record.id }}
+        </td>
         <td :class="borderClass">
             <span v-if="record.level >= 500" class="badge text-xs rounded-md bg-purple-500 text-black font-bold w-full">{{ record.level_name }}</span>
             <span v-else-if="record.level >= 400" class="badge text-xs rounded-md badge-error font-bold w-full">{{ record.level_name }}</span>

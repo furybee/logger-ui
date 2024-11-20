@@ -28,7 +28,7 @@ class LogController
         'channel' => '',
         'level_name' => '',
         'query' => '',
-        'per_page' => 300,
+        'per_page' => 10,
     ];
 
     protected LogRepository $logRepository;
@@ -55,6 +55,7 @@ class LogController
             'channel' => 'nullable|string',
             'level_name' => 'nullable|string',
             'query' => 'nullable|string',
+            'cursor' => 'nullable|string',
             'page' => 'nullable|integer|min:1',
         ]);
 
@@ -69,14 +70,15 @@ class LogController
             ->toArray();
 
         $paginator = $this->logRepository->getBuilder($filters)
-            ->orderByDesc('logged_at')
-            ->simplePaginate(self::DEFAULT_FILTERS['per_page'])
-            ->setPageName('page')
+            ->orderByDesc('id')
+            ->cursorPaginate(self::DEFAULT_FILTERS['per_page'], ['*'], 'cursor')
             ->toArray();
 
         $data = $paginator['data'];
 
         unset($paginator['data']);
+
+        info('Hellow from LoggerUi');
 
         return response()->json([
             'pagination' => $paginator,
