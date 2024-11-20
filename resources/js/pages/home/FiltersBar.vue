@@ -2,25 +2,37 @@
     <div>
         <div
             id="filterBar"
-            class="
-      hidden md:block
-      bg-grey-950
-      text-gray-100
-      font-bold
-      text-sm
-      flex
-      items-center
-      px-10
-    "
+            class="hidden md:block bg-base-300 font-bold text-sm flex items-center p-4"
         >
-            <div class="py-4 w-full items-center grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div class="form-control w-full">
+                <input type="text" placeholder="Search" v-model="model.query" class="input input-sm input-bordered w-full" />
+            </div>
+
+            <div class="py-4 w-full items-center grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="shadow-sm">
-                    <span class="inline-flex items-center px-3 rounded-t-md border border-r-0 border-gray-900 bg-gray-900 text-gray-500 sm:text-sm">
-                        App
-                    </span>
+                    <div class="label">
+                        <span class="label-text">From</span>
+                    </div>
+                    <input type="date" v-model="model.date_from" class="input input-sm input-bordered w-full" :disabled="isLoading" />
+                </div>
+
+                <label class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">To</span>
+                    </div>
+                    <input type="date" v-model="model.date_to" class="input input-sm input-bordered w-full" :disabled="isLoading" />
+                </label>
+            </div>
+
+            <div class="py-4 w-full items-center grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="shadow-sm">
+                    <div class="label">
+                        <span class="label-text">App</span>
+                    </div>
                     <select
-                        class="bg-gray-800 w-full rounded-r-md rounded-b-md"
+                        class="select select-sm w-full"
                         v-model="model.app_name"
+                        :disabled="isLoading"
                     >
                         <option value="">ALL</option>
                         <option v-for="(app, index) in props.availableFilters.app_names" :key="index">
@@ -29,50 +41,53 @@
                     </select>
                 </div>
 
-                <div class="rounded-md shadow-sm">
-                    <span class="inline-flex items-center px-3 rounded-t-md border border-r-0 border-gray-900 bg-gray-900 text-gray-500 sm:text-sm">
-                        Env
-                    </span>
+                <label class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">Env</span>
+                    </div>
                     <select
-                        class="bg-gray-800 w-full rounded-r-md rounded-b-md"
+                        class="select select-sm w-full"
                         v-model="model.environment"
+                        :disabled="isLoading"
                     >
                         <option value="">ALL</option>
                         <option v-for="(environment, index) in props.availableFilters.environments" :key="index">
                             {{ environment }}
                         </option>
                     </select>
-                </div>
+                </label>
 
-                <div class="rounded-md shadow-sm">
-                    <span class="inline-flex items-center px-3 rounded-t-md border border-r-0 border-gray-900 bg-gray-900 text-gray-500 sm:text-sm">
-                        Channel
-                    </span>
+                <label class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">Channel</span>
+                    </div>
                     <select
-                        class="bg-gray-800 w-full rounded-r-md rounded-b-md"
+                        class="select select-sm w-full"
                         v-model="model.channel"
+                        :disabled="isLoading"
                     >
                         <option value="">ALL</option>
                         <option v-for="(channel, index) in props.availableFilters.channels" :key="index">
                             {{ channel }}
                         </option>
                     </select>
-                </div>
+                </label>
 
-                <div class="rounded-md shadow-sm">
-                    <span class="inline-flex items-center px-3 rounded-t-md border border-r-0 border-gray-900 bg-gray-900 text-gray-500 sm:text-sm">
-                        Level
-                    </span>
+                <label class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">Level</span>
+                    </div>
                     <select
-                        class="bg-gray-800 w-full rounded-r-md rounded-b-md"
+                        class="select select-sm w-full"
                         v-model="model.level_name"
+                        :disabled="isLoading"
                     >
                         <option value="">ALL</option>
                         <option v-for="(level_name, index) in props.availableFilters.level_names" :key="index">
                             {{ level_name }}
                         </option>
                     </select>
-                </div>
+                </label>
             </div>
         </div>
     </div>
@@ -82,9 +97,18 @@
 import {defineModel, defineProps} from "vue";
 
 const props = defineProps({
+    isLoading: false,
     availableFilters: {
         type: Object,
         required: true,
+        default: () => {
+            return {
+                app_names: [],
+                environments: [],
+                channels: [],
+                level_names: [],
+            };
+        },
     }
 });
 

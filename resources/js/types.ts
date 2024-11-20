@@ -26,6 +26,12 @@ export type LogFiltersType = {
     nextCursorUrl: string;
 };
 
+export type LogRecordSettings = {
+    showId: boolean;
+    showDate: boolean;
+    showLevel: boolean;
+}
+
 export const PAGINATION_MODE = {
     INIT: 'init',
     NEXT: 'next',

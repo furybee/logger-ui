@@ -5,10 +5,7 @@
                 <a class="btn btn-ghost text-xl">LoggerUI</a>
             </div>
 
-            <div class="flex-1 gap-2">
-                <div class="form-control w-full">
-                    <input type="text" placeholder="Search" class="input input-sm input-bordered w-full lg:w-1/2" />
-                </div>
+            <div class="flex-1 gap-2 navbar-end">
                 <div class="flex gap-2 items-center">
                     <div class="mx-2">
                         <div v-if="isPlaying" class="radial-progress text-success flex items-center justify-center" :style="'--size:2rem; --value:'+ intervalTickerPercentage +';'" role="progressbar">
@@ -42,16 +39,52 @@
                         </div>
                         <ul
                             tabindex="0"
-                            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1000] mt-3 w-52 p-2 shadow">
-                            <li><a>Settings</a></li>
-                            <li><a>Logout</a></li>
+                            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1000] mt-3 p-2 shadow">
+                            <li>
+                                <div class="flex items-center justify-center">
+                                    <label class="form-label text-nowrap">Refresh Seconds</label>
+                                    <select v-model="refreshSeconds" class="select select-bordered select-xs">
+                                        <option value="10">10 seconds</option>
+                                        <option value="60">1 minute</option>
+                                    </select>
+                                </div>
+                            </li>
+                            <li>
+                                <hr class="border-base-300 mt-2">
+                            </li>
+                            <li>
+                                <label class="form-label cursor-pointer">
+                                    <input type="checkbox" v-model="settings.showId" class="cursor-pointer">
+                                    <span class="ml-2">Show ID</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="form-label cursor-pointer">
+                                    <input type="checkbox" v-model="settings.showLevel" class="cursor-pointer">
+                                    <span class="ml-2">Show Level</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="form-label cursor-pointer">
+                                    <input type="checkbox" v-model="settings.showDate" class="cursor-pointer">
+                                    <span class="ml-2">Show Date</span>
+                                </label>
+                            </li>
+                            <li>
+                                <hr class="border-base-300 mt-2">
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="bg-base-200" v-if="isFilterShowed">
+            <FiltersBar :available-filters="availableFilters" v-model="filters" :is-loading="isIdle"/>
+        </div>
+
         <div id="logLines" ref="logLines" class="flex-1 bg-base-100 overflow-y-auto overflow-x-hidden">
-            <LogRecords :filters="filters" :records="records"/>
+            <LogRecords :filters="filters" :records="records" :settings="settings"/>
         </div>
 
         <div class="bg-base-300 text-center p-1 text-xs">
@@ -88,8 +121,10 @@ import PlayIcon from "../../icons/PlayIcon.vue";
 import {PAGINATION_MODE, PaginatorType, RefreshLogParamsType} from "../../types";
 import DoubleChevronUp from "../../icons/DoubleChevronUp.vue";
 import FilterIcon from "../../icons/FilterIcon.vue";
+import FiltersBar from "./FiltersBar.vue";
 
 const settings = ref( {
+    showId: false,
     showDate: true,
     showLevel: true,
 });
@@ -110,7 +145,7 @@ const prevPagination = ref<PaginatorType>(null);
 const refreshSeconds = ref(10);
 const isIdle = ref(false);
 
-const filters = ref({
+const filters = reactive({
     date_to: "",
     date_from: "",
     app_name: "",
@@ -156,7 +191,7 @@ const scrollToTop = () => {
 
 const loadMore = async (params: RefreshLogParamsType = { url: "/logger-ui/logs", pagination_mode: PAGINATION_MODE.INIT, forceScrollToBottom: false, customFilters: {} }) => {
     const { forceScrollToBottom = false, customFilters = {} } = params;
-    const requestFilters = {...filters.value, ...customFilters};
+    const requestFilters = {...filters, ...customFilters};
 
     isIdle.value = true;
 
@@ -195,9 +230,9 @@ const loadMore = async (params: RefreshLogParamsType = { url: "/logger-ui/logs",
 
     records.value = newRecords;
 
-    isIdle.value = true;
+    isIdle.value = false;
 
-    availableFilters.value = response.data.availableFilters;
+    availableFilters.value = response.data.available_filters;
 
     if ([PAGINATION_MODE.INIT, PAGINATION_MODE.NEXT].includes(params.pagination_mode)) {
         if (forceScrollToBottom || isNearBottom) {
@@ -206,30 +241,7 @@ const loadMore = async (params: RefreshLogParamsType = { url: "/logger-ui/logs",
     } else if (params.pagination_mode === PAGINATION_MODE.PREV) {
         scrollToTop();
     }
-    //
 };
-
-onMounted(async() => {
-    const url = new URL(window.location);
-
-    allowedFilters.forEach((value) => {
-        filters.value[value] = "";
-    });
-
-    url.searchParams.forEach((value, key) => {
-        filters.value[key] = value;
-    });
-
-    await loadMore({ pagination_mode: PAGINATION_MODE.INIT });
-
-    play();
-});
-
-onUnmounted(() => {
-    clearInterval(intervalRefreshLogs);
-    clearInterval(intervalTicker);
-
-});
 
 const loadNext = async () => {
     await loadMore({ pagination_mode: PAGINATION_MODE.NEXT });
@@ -239,6 +251,34 @@ const loadPrev = async (url) => {
     await loadMore({ url, pagination_mode: PAGINATION_MODE.PREV });
 };
 
+const isInitialLoad = ref(true);
+onMounted(async() => {
+    const url = new URL(window.location);
+
+    allowedFilters.forEach((value) => {
+        filters[value] = "";
+    });
+
+    url.searchParams.forEach((value, key) => {
+        filters[key] = value;
+    });
+
+    await loadMore({ pagination_mode: PAGINATION_MODE.INIT });
+
+    play();
+
+    setTimeout(() => {
+        isInitialLoad.value = false;
+    }, 1000);
+});
+
+onUnmounted(() => {
+    clearInterval(intervalRefreshLogs);
+    clearInterval(intervalTicker);
+
+});
+
+/** PLAY/PAUSE Logic */
 const isPlaying = ref(false);
 let intervalRefreshLogs = null;
 let intervalTicker = null;
@@ -273,8 +313,8 @@ const play = () => {
 
     isPlaying.value = true;
 
-    if (filters.value.page !== 1) {
-        filters.value.page = 1;
+    if (filters.page !== 1) {
+        filters.page = 1;
     }
 
     startTicker();
@@ -287,4 +327,50 @@ const play = () => {
         play();
     }, refreshSeconds.value * 1000);
 }
+
+/** FILTERS */
+const isFilterShowed = ref(false);
+const toggleFilters = () => {
+    isFilterShowed.value = !isFilterShowed.value;
+};
+
+const timeoutId = ref(null);
+// watch deep to detect changes in nested objects
+watch(filters, async (newValue, oldValue) => {
+    if (isInitialLoad.value) {
+        return;
+    }
+
+    console.log('newValue', newValue);
+
+    clearTimeout(timeoutId.value);
+
+    const url = new URL(window.location);
+
+    for (const [key, value] of Object.entries(newValue)) {
+        if (typeof value === "number" && value <= 0) {
+            url.searchParams.delete(key);
+
+            continue;
+        }
+
+        if (typeof value === "string" && value.trim().length === 0) {
+            url.searchParams.delete(key);
+
+            continue;
+        }
+
+        url.searchParams.set(key, value);
+    }
+
+    window.history.pushState({}, "", url);
+
+    timeoutId.value = setTimeout(async () => {
+        pause();
+
+        await loadMore({ pagination_mode: PAGINATION_MODE.INIT });
+
+        play();
+    }, 500);
+});
 </script>

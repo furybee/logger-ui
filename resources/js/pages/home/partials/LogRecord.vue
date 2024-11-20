@@ -1,21 +1,21 @@
 <template>
     <tr class="hover:bg-base-200">
-        <td>
+        <td v-if="settings.showId">
             {{ record.id }}
         </td>
-        <td :class="borderClass">
+        <td v-if="settings.showLevel" :class="borderClass">
             <span v-if="record.level >= 500" class="badge text-xs rounded-md bg-purple-500 text-black font-bold w-full">{{ record.level_name }}</span>
             <span v-else-if="record.level >= 400" class="badge text-xs rounded-md badge-error font-bold w-full">{{ record.level_name }}</span>
             <span v-else-if="record.level >= 300" class="badge text-xs rounded-md badge-warning font-bold w-full">{{ record.level_name }}</span>
             <span v-else-if="record.level >= 250" class="badge text-xs rounded-md badge-info font-bold w-full">{{ record.level_name }}</span>
             <span v-else class="badge text-xs rounded-md bg-base-300 font-bold w-full">{{ record.level_name }}</span>
         </td>
-        <td>
+        <td v-if="settings.showDate">
             <span class="badge text-xs rounded-md bg-base-300 font-bold w-full text-nowrap">
                 {{ record.formatted_logged_at }}
             </span>
         </td>
-        <td>
+        <td class="w-full">
             <template v-if="record.message.length > 500">
                 <div :id="'shortMessage'+record.id">
                     {{ record.message.substring(0, 500) }}...
@@ -50,13 +50,14 @@
     </tr>
 </template>
 <script setup lang="ts">
-import {LogRecordType} from "../../../types";
+import {LogRecordSettings, LogRecordType} from "../../../types";
 import {computed, ref} from "vue";
 import CopyIcon from "../../../icons/CopyIcon.vue";
 import EllipsisIcon from "../../../icons/EllipsisIcon.vue";
 
 const props = defineProps<{
-    record: LogRecordType
+    record: LogRecordType,
+    settings: LogRecordSettings,
 }>();
 
 const isDetailsDisplayed = ref(false);

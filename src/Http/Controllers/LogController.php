@@ -28,7 +28,7 @@ class LogController
         'channel' => '',
         'level_name' => '',
         'query' => '',
-        'per_page' => 10,
+        'per_page' => 300,
     ];
 
     protected LogRepository $logRepository;
@@ -77,8 +77,6 @@ class LogController
         $data = $paginator['data'];
 
         unset($paginator['data']);
-
-        info('Hellow from LoggerUi');
 
         return response()->json([
             'pagination' => $paginator,
